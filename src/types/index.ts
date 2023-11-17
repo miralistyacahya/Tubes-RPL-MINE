@@ -1,0 +1,27 @@
+export interface account {
+    username: string;
+    password: string;
+    role: string;
+}
+
+export interface product {
+    idproduct: number;
+    productname: string;
+    category: string;
+    price: number;
+    stock: number;
+}
+
+export interface transaction {
+    idtransaction: number;
+    username: string;
+    transactiondate: Date;
+    totalcost: number;
+}
+
+export interface orders {
+    idtransaction: number;
+    idproduct: number;
+    quantity: number;
+    price: number;
+}
