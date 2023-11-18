@@ -2,18 +2,24 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import PlaceholderImage from "../../public/icons/Logo-Mine.png"
-import { NAV_ADMIN } from '../constants'
+import IconProfile from "../../public/icons/icon-profile.svg"
+import IconMenu from "../../public/icons/menu.svg"
+import { NAV_ADMIN, NAV_INVENTARIS } from '../constants'
 import { link } from 'fs'
+import Button from './Button'
+
+// cek role di page, component navbar nerima passing keterangan rolenya siapa, hasil passing dibuat manggil nav_admin/nav_inventaris/nav_kasir
 
 const Navbar = () => {
   return (
-    <nav className='flexBetween max-container padding-container relative z-30 px-5 py-3'>
+    <nav className='flexBetween max-container padding-container relative z-30 py-4'>
       <Link href="/">
-        <Image src={PlaceholderImage} alt="logo" width={120}/>
+        <Image src={PlaceholderImage} alt="logo" width={100}/>
       </Link>
 
       <ul className='hidden h-full gap-12 lg:flex'>
-        {NAV_ADMIN.map((link) => (
+        {/* ini nanti diatur rolenya dulu, cek role -> terus di mapping panggil NAV yang siapa */}
+        {NAV_INVENTARIS.map((link) => (
           <Link href={link.href} key={link.key} className='medium-16 text-blue-500 flexCenter cursor-pointer pb-1.5 transition-all hover:font-bold'>
             {link.label}
           </Link>
@@ -21,9 +27,16 @@ const Navbar = () => {
       </ul>
 
       <div className='lg:flexCenter hidden'>
-        
+        <Button 
+          type="button"
+          title="Profile"
+          icon={IconProfile}
+          round="rounded-full"
+          variant="btn_blue"
+        />
       </div>
 
+      <Image src={IconMenu} alt="menu" width={24} height={24} className='inline-block cursor-pointer lg:hidden'/>
     </nav>
   )
 }
