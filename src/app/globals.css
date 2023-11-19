@@ -162,6 +162,18 @@ body {
   .heading {
     color: #295F9A;
   }
+
+  .flexContainer {
+    display: flex;
+  }
+  
+  .leftContent {
+    flex: 2;
+  }
+  
+  .rightContent {
+    flex: 1;
+  }
     
 }
 
