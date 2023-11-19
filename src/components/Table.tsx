@@ -1,114 +1,55 @@
-export default function Table() {
+import React from 'react';
+
+export type TableColumn = {
+    label: string;
+    dataKey: string;
+    width: string;
+    align: 'left' | 'center';
+}
+
+type TableProps = {
+    columns: TableColumn[];
+    data: Record<string, string | JSX.Element>[];
+};
+
+const Table: React.FC<TableProps> = ({ columns, data }) => {
+    if (!columns || !data || data.length === 0) {
+        return <div>Tidak ada produk</div>; // bikin parameter aja biar messagenya sesuai page, styling blm diatur
+    }
+
     return (
-        <div className="flexCenter relative overflow-x-auto shadow-md sm:rounded-lg mx-16">
+        <div className="flexCenter relative overflow-x-auto">
             <table className="w-full text-sm text-left text-gray-700">
                 <thead className="text-xs text-gray-700 uppercase bg-white text-center">
                     <tr>
-                        <th scope="col" className="px-4 py-3 bold-14">
-                        Product name
-                        </th>
-                        <th scope="col" className="px-4 py-3 bold-14">
-                        Color
-                        </th>
-                        <th scope="col" className="px-4 py-3 bold-14">
-                        Category
-                        </th>
-                        <th scope="col" className="px-4 py-3 bold-14">
-                        Price
-                        </th>
-                        <th scope="col" className="px-4 py-3 bold-14">
-                        Action
-                        </th>
+                        {columns.map((column, index) => (
+                            <th 
+                            key={index}
+                            scope="col"
+                            className={`px-4 py-3 w-${column.width} bold-14`}
+                            >
+                                {column.label}
+                            </th>
+                        ))}
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className="odd:bg_row_blue even:bg-white border-b text-center">
-                        <th scope="row" className="px-4 py-3 medium-14" style={{ maxWidth: '10px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        Apple MacBook Pro Apple MacBook Pro Apple MacBook Pro Apple MacBook Pro Apple MacBook Pro
-                        </th>
-                        <td className="px-4 py-3 medium-14">
-                        Silver
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        Laptop
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        $2999
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr className="odd:bg_row_blue even:bg-white border-b">
-                        <th scope="row" className="px-4 py-3 medium-14 whitespace-nowrap overflow-hidden overflow-ellipsis w-40">
-                        Microsoft Surface Pro
-                        </th>
-                        <td className="px-4 py-3 medium-14">
-                        White
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        Laptop PC
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        $1999
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr className="odd:bg_row_blue even:bg-white border-b">
-                        <th scope="row" className="px-4 py-3 medium-14 whitespace-nowrap overflow-hidden overflow-ellipsis w-40">
-                        Microsoft Surface Pro
-                        </th>
-                        <td className="px-4 py-3 medium-14">
-                        White
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        Laptop PC
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        $1999
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr className="odd:bg_row_blue even:bg-white border-b">
-                        <th scope="row" className="px-4 py-3 medium-14 whitespace-nowrap overflow-hidden overflow-ellipsis w-40">
-                        Microsoft Surface Pro
-                        </th>
-                        <td className="px-4 py-3 medium-14">
-                        White
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        Laptop PC
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        $1999
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr className="odd:bg_row_blue even:bg-white border-b">
-                        <th scope="row" className="px-4 py-3 medium-14 whitespace-nowrap overflow-hidden overflow-ellipsis w-40">
-                        Microsoft Surface Pro
-                        </th>
-                        <td className="px-4 py-3 medium-14">
-                        White
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        Laptop PC
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        $1999
-                        </td>
-                        <td className="px-4 py-3 medium-14">
-                        <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
+                    {data.map((row, rowIndex) => (
+                        <tr key={rowIndex} className={`${rowIndex % 2 === 0 ? 'bg-white' : 'bg_row_blue'} border-b`}>
+                            {columns.map((column, colIndex) => (
+                                <td
+                                    key={colIndex}
+                                    className={`px-8 py-2 ${column.align === 'center' ? 'text-center' : 'text-left'} medium-14`}
+                                    style = {{ maxWidth: '10px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {column.dataKey === 'aksi' ? row.aksi : row[column.dataKey]}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
     );
 }
+
+export default Table;
