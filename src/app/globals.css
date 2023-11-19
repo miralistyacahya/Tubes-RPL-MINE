@@ -158,6 +158,10 @@ body {
   .bg_row_blue {
       background-color: #F6F8FE;
   }
+
+  .heading {
+    color: #295F9A;
+  }
     
 }
 

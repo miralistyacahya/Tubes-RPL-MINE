@@ -4,10 +4,13 @@ import Pagination from '@/src/components/Pagination'
 
 export default async function app() {
     return (
-        <div className="mt-8 bg-white shadow-md sm:rounded-lg mx-16">
-            <SearchBar />
-            <Table />
-            <Pagination />
+        <div className='mx-16'>
+            <h1 className="heading bold-20 mt-4">Daftar Produk</h1>
+            <div className="mt-4 bg-white shadow-md sm:rounded-lg">
+                <SearchBar />
+                <Table />
+                {/* <Pagination /> */}
+            </div>
         </div>
     )
 }
