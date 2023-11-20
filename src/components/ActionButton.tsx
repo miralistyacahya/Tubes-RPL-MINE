@@ -1,6 +1,7 @@
 import Image from "next/image";
 import editButton from "../../public/icons/edit button.svg"
 import deleteButton from "../../public/icons/delete button.svg"
+import addButton from "../../public/icons/add button.svg"
 
 
 export default function ActionButton(){
@@ -14,4 +15,14 @@ export default function ActionButton(){
             </button>
         </div>
     );
+}
+
+export function AddedButton(){
+    return (
+        <div>
+            <button>
+                <Image src={addButton} alt="add"/>
+            </button>
+        </div>
+    )
 }
