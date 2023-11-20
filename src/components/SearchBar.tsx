@@ -5,7 +5,7 @@ const SearchBar = ({ containerWidth = 'w-2/4' }) => {
 // adjust container width -> w-1/4, w-2/4 (default), w-3/4, w-4/4
 
   return (
-    <div className="pb-4 pt-8">
+    <div className="py-6">
       <label htmlFor="table-search" className="sr-only">
         Search
       </label>
