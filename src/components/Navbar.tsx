@@ -20,7 +20,7 @@ const Navbar = ({
         <Image src={PlaceholderImage} alt="logo" width={88}/>
       </Link>
       <div className='flex flex-row gap-12 items-center'>
-        <ul className='hidden h-full gap-12 lg:flex'>
+        <ul className='hidden h-full gap-12 md:flex'>
           {/* ini nanti diatur rolenya dulu, cek role -> terus di mapping panggil NAV yang siapa */}
           {listOfNav.map((link) => (
             <Link href={link.href} key={link.key} className='medium-16 text-blue-500 flexCenter cursor-pointer transition-all hover:font-bold'>
@@ -29,7 +29,7 @@ const Navbar = ({
           ))}
         </ul>
 
-        <div className='lg:flexCenter hidden'>
+        <div className='md:flexCenter hidden'>
           <Button 
             type="button"
             title="Profile"
@@ -42,7 +42,7 @@ const Navbar = ({
       </div>
       
 
-      <Image src={IconMenu} alt="menu" width={24} height={24} className='inline-block cursor-pointer lg:hidden'/>
+      <Image src={IconMenu} alt="menu" width={24} height={24} className='inline-block cursor-pointer md:hidden'/>
     </nav>
   )
 }
