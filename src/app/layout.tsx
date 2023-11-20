@@ -21,16 +21,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   // ini nanti pindah ke tiap page
-  const isAdmin = false //role === "admin"
-  const isKasir = true
+  // const isAdmin = false //role === "admin"
+  // const isKasir = true
   return (
     <html lang="en">
       <body >
-        <Navbar 
+        {/* <Navbar 
           listOfNav={
             (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : NAV_INVENTARIS))
           }
-        />
+        /> */}
         <main className='relative overflow-hidden bg_dashboard'>
           {children}
         </main>

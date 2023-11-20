@@ -8,6 +8,8 @@ import ActionButton from '@/src/components/ActionButton';
 import { useEffect, useState } from 'react';
 import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
+import Navbar from '@/src/components/Navbar';
+import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR } from '@/src/constants';
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -65,10 +67,19 @@ export default function app() {
 
     const pageCount = Math.ceil(dataItem.length/dataPerPage);
 
+    const isAdmin = true //role === "admin"
+    const isKasir = false
+
     return (
-        <div className='mx-16'>
-            <h1 className="heading bold-20 mt-4">Daftar Produk</h1>
-            <div className="mt-4 mb-8 bg-white shadow-md sm:rounded-lg">
+        <div>
+            <Navbar 
+            listOfNav={
+                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : NAV_INVENTARIS))
+            }
+            />
+            <div className='mx-16'>
+            <h1 className="heading bold-28 mt-4">Daftar Produk</h1>
+            <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
                 <SearchBar />
                 <Table columns={columns} data={displayData}/>
                 <div className='grid grid-cols-3 items-center'>
@@ -89,5 +100,7 @@ export default function app() {
                 
             </div>
         </div>
+        </div>
+        
     )
 }
