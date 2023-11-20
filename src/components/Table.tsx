@@ -39,7 +39,7 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
                             {columns.map((column, colIndex) => (
                                 <td
                                     key={colIndex}
-                                    className={`px-8 py-2 ${column.align === 'center' ? 'text-center' : 'text-left'} medium-14`}
+                                    className={`px-4 py-2 ${column.align === 'center' ? 'text-center' : 'text-left'} medium-14`}
                                     style = {{ maxWidth: '10px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {column.dataKey === 'aksi' ? row.aksi : row[column.dataKey]}
                                 </td>
