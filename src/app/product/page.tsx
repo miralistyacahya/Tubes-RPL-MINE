@@ -89,34 +89,17 @@ export default function app() {
                 <h1 className="heading bold-28 mt-8">Daftar Produk</h1>
                 <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
                     <div className="grid grid-cols-2">
-                        <SearchBar />
-                        {/* <div className="flexCenter gap-4"> */}
-                            {/* <Button
+                        <SearchBar containerWidth="w-full"/>
+                        <div className="justify-end flex flex-row pr-10 my-5 gap-4">
+                            <Button
                                 type="button"
                                 title="Semua Kategori"
                                 icon={IconFilter}
                                 round="rounded-lg"
                                 variant="btn_blue"
                                 size="semibold-14"
-                            /> */}
-                            {/* <Button
-                                type="button"
-                                title="Tambah Kategori"
-                                icon={IconAddTop}
-                                round="rounded-lg"
-                                variant="btn_blue"
-                                size="semibold-14"
                             />
-                             <Button
-                                type="button"
-                                title="Tambah Produk"
-                                icon={IconAddTop}
-                                round="rounded-lg"
-                                variant="btn_blue"
-                                size="semibold-14"
-                            /> */}
-                        {/* </div> */}
-                        <div className="justify-center">
+                            
                             <Button
                                 type="button"
                                 title="Tambah Kategori"
