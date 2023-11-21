@@ -9,7 +9,7 @@ export type TableColumn = {
 
 type TableProps = {
     columns: TableColumn[];
-    data: Record<string, string | JSX.Element>[];
+    data: Record<string, string | JSX.Element | number >[];
 };
 
 const Table: React.FC<TableProps> = ({ columns, data }) => {
