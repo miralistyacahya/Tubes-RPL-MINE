@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/src/utils/supabase/client";
-import Modal from "@/src/components/modal";// Adjust the path accordingly
+import Modal from "@/src/components/modal";
 import tutup from "../../../public/icons/tutup.svg";
 import simpan from "../../../public/icons/simpan.svg";
 import Image from "next/image";
