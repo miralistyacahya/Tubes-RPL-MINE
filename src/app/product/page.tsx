@@ -26,11 +26,12 @@ const columns: TableColumn[] = [
 export default function app() {
     const [dataItem, setDataItem] = useState<product[]>([]);
     const [pageNumber, setPageNumber] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
     const [pageCount, setPageCount] = useState(0);
     const dataPerPage = 10;
     const pageVisited = pageNumber * dataPerPage;
     const pageVisitedTo = pageVisited + dataPerPage;
-
+    
     useEffect (() => {
         const fetchData = async () => {
             try {
@@ -38,7 +39,7 @@ export default function app() {
                 // const supabase = createClient(cookieStore);
                 const supabase =  createClient();
                 const { data: totalCountResponse} = await supabase.from('product').select('count');
-                const totalCount: number = totalCountResponse?.[0]?.count || 0;
+                setTotalCount(totalCountResponse?.[0]?.count || 0);
         
                 console.log(totalCount);
 
@@ -65,7 +66,7 @@ export default function app() {
             // }
         };
         fetchData();
-    }, [pageVisited, pageVisitedTo]);
+    }, [pageVisited, pageVisitedTo, totalCount]);
 
     const displayData = dataItem.map((product) => ({
       idproduct: product.idproduct.toString() || 'N/A',
@@ -126,7 +127,7 @@ export default function app() {
                         <div className='hidden lg:flex'>
                             <p className="text-sm text-gray-700 pl-8">
                                 Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisited + dataPerPage}</span> of{' '}
-                                <span className="font-medium">{dataItem.length}</span> results
+                                <span className="font-medium">{totalCount}</span> results
                             </p>
                         </div>
                         <div className='col-start-2 flex justify-center'>
