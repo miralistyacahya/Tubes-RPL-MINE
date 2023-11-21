@@ -20,19 +20,29 @@ const columns: TableColumn[] = [
 
 export default function app() {
     const [dataItem, setDataItem] = useState<account[]>([]);
-    
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    const dataPerPage = 10;
+    const pageVisited = pageNumber * dataPerPage;
+    const pageVisitedTo = pageVisited + dataPerPage;
+
     useEffect (() => {
         const fetchData = async () => {
             try {
                 // const cookieStore = cookies()
                 // const supabase = createClient(cookieStore);
                 const supabase =  createClient();
-                // const user = supabase.auth.getUser();
+                const { data: totalCountResponse} = await supabase.from('account').select('count');
+                setTotalCount(totalCountResponse?.[0]?.count || 0);
+        
+                console.log(totalCount);
 
-                // console.log(user);
+                const newPageCount = Math.ceil(totalCount/dataPerPage)
+                setPageCount(newPageCount);
 
-                const { data: accounts, error } = await supabase.from('account').select();
-            
+                const { data: accounts, error } = await supabase.from('account').select().range(pageVisited, pageVisitedTo-1);
+
                 if (accounts) {
                     setDataItem(accounts);
                 }
@@ -51,21 +61,16 @@ export default function app() {
             // }
         };
         fetchData();
-    }, []);
+    }, [pageVisited, pageVisitedTo, totalCount]);
     
-    const [pageNumber, setPageNumber] = useState(0);
 
-    const dataPerPage = 10;
-    const pageVisited = pageNumber * dataPerPage;
-
-    const displayData = dataItem.slice(pageVisited, pageVisited + dataPerPage).map((account) => ({
+    const displayData = dataItem.map((account) => ({
       username: account.username || 'N/A',
       password: account.password || 'N/A',
       role: account.role || 'N/A',
       aksi: <ActionButton />
     }));
 
-    const pageCount = Math.ceil(dataItem.length/dataPerPage);
 
     const isAdmin = true //role === "admin"
     const isKasir = false
@@ -85,8 +90,8 @@ export default function app() {
                 <div className='grid grid-cols-3 items-center'>
                     <div className='hidden lg:flex'>
                         <p className="text-sm text-gray-700 pl-8">
-                            Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisited + dataPerPage}</span> of{' '}
-                            <span className="font-medium">{dataItem.length}</span> results
+                            Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisitedTo > totalCount ? totalCount : pageVisitedTo}</span> of{' '}
+                            <span className="font-medium">{totalCount}</span> results
                         </p>
                     </div>
                     <div className='col-start-2 flex justify-center'>
