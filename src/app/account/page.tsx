@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
 import TambahAkses from './tambahAkses';
+import EditAkses from './editAkses';
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -56,11 +57,11 @@ export default function app() {
     const pageVisited = pageNumber * dataPerPage;
 
     const displayData = dataItem.slice(pageVisited, pageVisited + dataPerPage).map((account) => ({
-      username: account.username || 'N/A',
-      password: account.password || 'N/A',
-      role: account.role || 'N/A',
-      aksi: <ActionButton />
-    }));
+        username: account.username || 'N/A',
+        password: account.password || 'N/A',
+        role: account.role || 'N/A',
+        aksi: <EditAkses account={account} />,
+      }));
 
     const pageCount = Math.ceil(dataItem.length/dataPerPage);
 
