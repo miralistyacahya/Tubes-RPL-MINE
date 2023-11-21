@@ -1,12 +1,14 @@
 "use client"
 
+import { useEffect, useState } from 'react';
 import SearchBar from '@/src/components/SearchBar'
 import Table, { TableColumn } from '@/src/components/Table'
 import Pagination from '@/src/components/Pagination'
 import Button from '@/src/components/Button'
-import { AddedButton } from '@/src/components/ActionButton';
+import { AddedButton, MinButton, PlusButton, CloseButton } from '@/src/components/ActionButton';
+import Navbar from '@/src/components/Navbar';
 import Filter from "@/public/icons/filter-button-top-table.svg"
-import { useEffect, useState } from 'react';
+import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR } from '@/src/constants';
 import { product } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
 
@@ -20,14 +22,27 @@ const columns: TableColumn[] = [
 
 export default function Cart() {
     const [dataItem, setDataItem] = useState<product[]>([]);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    const dataPerPage = 10;
+    const pageVisited = pageNumber * dataPerPage;
+    const pageVisitedTo = pageVisited + dataPerPage;
 
     useEffect (() => {
         const fetchData = async () => {
             try {
                 const supabase =  createClient();
-
-                const { data: products, error } = await supabase.from('product').select();
+                const { data: totalCountResponse } = await supabase.from('product').select('count');
+                setTotalCount(totalCountResponse?.[0]?.count || 0);
+        
+                console.log(totalCount);
             
+                const newPageCount = Math.ceil(totalCount/dataPerPage)
+                setPageCount(newPageCount);
+
+                const { data: products, error } = await supabase.from('product').select().range(pageVisited, pageVisitedTo-1);
+
                 if (products) {
                     setDataItem(products);
                 }
@@ -38,14 +53,10 @@ export default function Cart() {
 
         };
         fetchData();
-    }, []);
+    },[pageVisited, pageVisitedTo, totalCount]);
     
-    const [pageNumber, setPageNumber] = useState(0);
-
-    const dataPerPage = 10;
-    const pageVisited = pageNumber * dataPerPage;
   
-    const displayData = dataItem.slice(pageVisited, pageVisited + dataPerPage).map((product) => ({
+    const displayData = dataItem.map((product) => ({
       idproduct: product.idproduct || 'N/A',
       productname: product.productname || 'N/A',
       category: product.category || 'N/A',
@@ -53,52 +64,119 @@ export default function Cart() {
       aksi: <AddedButton />,
     }));
 
-    const pageCount = Math.ceil(dataItem.length/dataPerPage);
+    const isAdmin = false;
+    const isKasir = true;
 
     return (
-        <div className="flexContainer">
-            <div className="leftContent">
-                <div style={{ marginLeft: '64px', marginRight: '32px' }}>
-                    <h1 className="heading bold-28 mt-4">Daftar Produk</h1>
-                    <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
-                        <div className="grid grid-cols-2">
-                            <SearchBar containerWidth='w-full'/>
-                            <div className="flex justify-end items-center pr-8 my-4">
-                                <Button
-                                    type="button"
-                                    title="Semua Kategori"
-                                    icon={Filter}
-                                    round="rounded-lg"
-                                    variant="btn_blue"
-                                    size="semibold-14"
-                                />
+        <div>
+            <Navbar 
+            listOfNav={
+                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : NAV_INVENTARIS))
+            }
+            />
+            <div className="flexContainer">
+                <div className="leftContent">
+                    <div style={{ marginLeft: '64px', marginRight: '32px' }}>
+                        <h1 className="heading bold-28 mt-4">Daftar Produk</h1>
+                        <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
+                            <div className="grid grid-cols-2">
+                                <SearchBar containerWidth='w-full'/>
+                                <div className="flex justify-end items-center pr-8 my-4">
+                                    <Button
+                                        type="button"
+                                        title="Semua Kategori"
+                                        icon={Filter}
+                                        round="rounded-lg"
+                                        variant="btn_blue"
+                                        size="semibold-14"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <Table columns={columns} data={displayData}/>
-                        <div className='grid grid-cols-2 items-center'>
-                            <div className='hidden lg:flex'>
-                                <p className="text-sm text-gray-700 pl-8">
-                                    Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisited + dataPerPage}</span> of{' '}
-                                    <span className="font-medium">{dataItem.length}</span> results
-                                </p>
-                            </div>
-                            <div className='col-start-2 flex justify-end'>
-                                <Pagination 
-                                setPageNumber={setPageNumber}
-                                currentPage={pageNumber}
-                                pageCount={pageCount}
-                                />
+                            <Table columns={columns} data={displayData}/>
+                            <div className='grid grid-cols-2 items-center'>
+                                <div className='hidden lg:flex'>
+                                    <p className="text-sm text-gray-700 pl-8">
+                                        Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisitedTo > totalCount ? totalCount : pageVisitedTo}</span> of{' '}
+                                        <span className="font-medium">{totalCount}</span> results
+                                    </p>
+                                </div>
+                                <div className='col-start-2 flex justify-end'>
+                                    <Pagination 
+                                    setPageNumber={setPageNumber}
+                                    currentPage={pageNumber}
+                                    pageCount={pageCount}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="rightContent">
-                <div style={{ marginRight: '64px'}}>
-                    <div className="mt-20 mb-12 bg-white shadow-md sm:rounded-lg" style={{ minHeight: '93vh' }}>
-                        <h1 className="heading bold-20 pt-4 text-center">Keranjang</h1>
-                        <div>
-                            <div className="regular-16 text-center" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '95vh' }}><i>Tidak ada barang di keranjang</i></div>
+                <div className="rightContent">
+                    <div style={{ marginRight: '64px'}}>
+                        <div className="mt-20 bg-white shadow-md sm:rounded-lg">
+                            <h1 className="heading bold-20 pt-4 pb-4 text-center">Keranjang</h1>
+                            <div className="px-6 overflow-auto" style={{height: "512px"}}>
+                                {/* <div className="regular-16 text-center" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '92vh' }}><i>Tidak ada barang di keranjang</i></div> */}
+                                <div className= "medium-14 text-[#737272]">Tanggal : 26/10/2023</div>
+                                <div className= "medium-14 text-[#737272]">Pegawai Kasir : Toqeqrin</div>
+                                <div className= "bold-14 grid grid-cols-2 text-center pt-6 pb-2 relative border-b">
+                                    <p>Product</p>
+                                    <p>Qty</p>
+                                </div>
+
+                                <div className="py-4 border-b">
+                                    <div className="flex justify-between">
+                                        <div className="medium-16" style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                                            Pepsodent
+                                        </div>
+                                        <div className="flex">
+                                            <MinButton />
+                                            <div className="mx-4">
+                                                5
+                                            </div>
+                                            <div className="mr-4">
+                                                <PlusButton />
+                                            </div>
+                                            <CloseButton />
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <div className="medium-12 text-[#A3A3A3] flex">
+                                            Rp5.000,00
+                                        </div>
+                                        <div className="semibold-14 mr-6">
+                                            Rp100.000,00
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="py-4 border-b">
+                                    <div className="flex justify-between">
+                                        <div className="medium-16" style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                                            Pepsodent Pepsodent Pepsodent Pepsodent  Pepsodent Pepsodent Pepsodent 
+                                        </div>
+                                        <div className="flex">
+                                            <MinButton />
+                                            <div className="mx-4">
+                                                5
+                                            </div>
+                                            <div className="mr-4">
+                                                <PlusButton />
+                                            </div>
+                                            <CloseButton />
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <div className="medium-12 text-[#A3A3A3] flex">
+                                            Rp5.000,00
+                                        </div>
+                                        <div className="semibold-14 mr-6">
+                                            Rp100.000,00
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
