@@ -25,19 +25,28 @@ const columns: TableColumn[] = [
 
 export default function app() {
     const [dataItem, setDataItem] = useState<product[]>([]);
-    
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
+    const dataPerPage = 10;
+    const pageVisited = pageNumber * dataPerPage;
+    const pageVisitedTo = pageVisited + dataPerPage;
+
     useEffect (() => {
         const fetchData = async () => {
             try {
                 // const cookieStore = cookies()
                 // const supabase = createClient(cookieStore);
                 const supabase =  createClient();
-                // const user = supabase.auth.getUser();
+                const { data: totalCountResponse} = await supabase.from('product').select('count');
+                const totalCount: number = totalCountResponse?.[0]?.count || 0;
+        
+                console.log(totalCount);
 
-                // console.log(user);
+                const newPageCount = Math.ceil(totalCount/dataPerPage)
+                setPageCount(newPageCount);
 
-                const { data: products, error } = await supabase.from('product').select();
-            
+                const { data: products, error } = await supabase.from('product').select().range(pageVisited, pageVisitedTo-1);
+
                 if (products) {
                     setDataItem(products);
                 }
@@ -56,23 +65,17 @@ export default function app() {
             // }
         };
         fetchData();
-    }, []);
-    
-    const [pageNumber, setPageNumber] = useState(0);
+    }, [pageVisited, pageVisitedTo]);
 
-    const dataPerPage = 10;
-    const pageVisited = pageNumber * dataPerPage;
-
-    const displayData = dataItem.slice(pageVisited, pageVisited + dataPerPage).map((product) => ({
+    const displayData = dataItem.map((product) => ({
       idproduct: product.idproduct.toString() || 'N/A',
       productname: product.productname || 'N/A',
       category: product.category || 'N/A',
-      price: product.price.toString() || 'N/A',
+      price: `Rp${product.price.toLocaleString('id-ID')},00` || 'N/A',
       stock: product.stock.toString() || 'N/A',
       aksi: <ActionButton />
     }));
 
-    const pageCount = Math.ceil(dataItem.length/dataPerPage);
 
       // ini nanti pindah ke tiap page
     const isAdmin = false //role === "admin"
