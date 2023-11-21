@@ -126,7 +126,7 @@ export default function app() {
                     <div className='grid grid-cols-3 items-center'>
                         <div className='hidden lg:flex'>
                             <p className="text-sm text-gray-700 pl-8">
-                                Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisited + dataPerPage}</span> of{' '}
+                                Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisitedTo > totalCount ? totalCount : pageVisitedTo}</span> of{' '}
                                 <span className="font-medium">{totalCount}</span> results
                             </p>
                         </div>
