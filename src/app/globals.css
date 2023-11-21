@@ -106,6 +106,10 @@ body {
     @apply text-[18px] font-[500];
   }
 
+  .semibold-12 {
+    @apply text-[12px] font-[600];
+  }
+
   .semibold-14 {
     @apply text-[14px] font-[600];
   }
@@ -158,9 +162,21 @@ body {
     @apply text-[14px] font-[700];
   }
 
+  .bold-12 {
+    @apply text-[12px] font-[700];
+  }
+
   /* button */
   .btn_blue {
     @apply bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600
+  }
+
+  .btn_red {
+    @apply bg-red-500 px-2 py-2 text-white transition-all hover:bg-red-600
+  }
+
+  .btn_green {
+    @apply bg-green-500 px-2 py-2 text-white transition-all hover:bg-green-600
   }
 
   .bg_dashboard {

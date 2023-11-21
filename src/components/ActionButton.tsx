@@ -36,8 +36,8 @@ export function AddedButton() {
 
 export function MinButton() {
     return (
-        <div>
-            <button>
+        <div className="flex items-center">
+            <button style={{ width: '20px', height: '20px' }}>
                 <Image src={ minusButton } alt="min" />
             </button>
         </div>
@@ -46,8 +46,8 @@ export function MinButton() {
 
 export function PlusButton() {
     return (
-        <div>
-            <button>
+        <div className="flex items-center">
+            <button style={{ width: '20px', height: '20px' }}>
                 <Image src={ plusButtonCart } alt="min" />
             </button>
         </div>
