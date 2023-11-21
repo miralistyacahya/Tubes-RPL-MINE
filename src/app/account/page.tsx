@@ -7,6 +7,7 @@ import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
 import TambahAkses from './tambahAkses';
 import EditAkses from './editAkses';
+import HapusAkses from './hapusAkses';
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -52,11 +53,31 @@ export default function app() {
         setDataItem(updatedDataItem);
     };
 
+    const handleDelete = async (username: string) => {
+        try {
+          const supabase = createClient();
+          await supabase.from('account').delete().eq('username', username);
+    
+          // Set state to reflect the updated data without the deleted user
+          setDataItem((prevData) => prevData.filter((account) => account.username !== username));
+    
+          setTotalCount((prevCount) => prevCount - 1); // Update total count after deletion
+        } catch (error: any) {
+          console.error('Error deleting data:', error.message);
+        }
+      };
+    
+
     const displayData = dataItem.map((account) => ({
         username: account.username || 'N/A',
         password: account.password || 'N/A',
         role: account.role || 'N/A',
-        aksi: <EditAkses account={account} onRoleChange={handleRoleChange} />, // Pass the callback
+        aksi: (
+            <div className="flex justify-center">
+                <EditAkses account={account} onRoleChange={handleRoleChange} />
+                <HapusAkses username={account.username} onDelete={(deletedUsername) => handleDelete(deletedUsername)} />
+            </div>
+        ),
     }));
 
     return (

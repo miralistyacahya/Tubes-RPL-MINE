@@ -74,9 +74,10 @@ function EditAkses({ account, onRoleChange }: EditAksesProps) {
                 <Image src={tutup} alt="edit" />
               </button>
             </div>
+            <div className='flex justify-left mb-4'>
             <h3 style={{ fontSize: '28px', color: '#295F9A' }} className="font-bold text-lg mb-4">
               Ubah Akses
-            </h3>
+            </h3> </div>
             <form onSubmit={handleSubmit}>
               <div className="form-control">
                 <label className="label font-bold">Username</label>
