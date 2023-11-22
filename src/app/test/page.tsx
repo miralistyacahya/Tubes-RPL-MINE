@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
 import Navbar from '@/src/components/Navbar';
-import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR } from '@/src/constants';
+import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -72,14 +72,15 @@ export default function app() {
     }));
 
 
-    const isAdmin = true //role === "admin"
+    const isAdmin = false //role === "admin"
     const isKasir = false
+    const isInventaris = false
 
     return (
         <div>
             <Navbar 
             listOfNav={
-                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : NAV_INVENTARIS))
+                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
             }
             />
             <div className='mx-16'>
