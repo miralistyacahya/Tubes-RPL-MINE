@@ -40,19 +40,52 @@ export default function app() {
         setSelectedOption(value);
         setIsOpen(false);
     }
+    const [searchQuery, setSearchQuery] = useState('');
+
     useEffect (() => {
         const fetchData = async () => {
             try {
                 // const cookieStore = cookies()
                 // const supabase = createClient(cookieStore);
                 const supabase =  createClient();
-                const { data: totalCountResponse } = selectedOption === 'Semua Kategori' || selectedOption === null ? await supabase.from('product').select('count') : await supabase.from('product').select('count').eq('category', selectedOption);
+                // const { data: totalCountResponse } = selectedOption === 'Semua Kategori' || selectedOption === null ? 
+                //     await supabase.from('product').select('count')
+                //     : await supabase.from('product').select('count').eq('category', selectedOption)
+                let totalCountQuery;
+
+                // Combine logic for fetching total count based on selected option and search query
+                if (searchQuery && (selectedOption === 'Semua Kategori' || selectedOption === null)) {
+                    totalCountQuery = supabase.from('product').select('count').ilike('productname', `%${searchQuery}%`);
+                } else if (searchQuery) {
+                    totalCountQuery = supabase.from('product').select('count').eq('category', selectedOption).ilike('productname', `%${searchQuery}%`);
+                } else if(selectedOption === 'Semua Kategori' || selectedOption === null) {
+                    totalCountQuery = supabase.from('product').select('count');
+                } else {
+                    totalCountQuery = supabase.from('product').select('count').eq('category', selectedOption);
+                }
+
+                const { data: totalCountResponse } = await totalCountQuery;
                 setTotalCount(totalCountResponse?.[0]?.count || 0);
 
                 const newPageCount = Math.ceil(totalCount/dataPerPage)
                 setPageCount(newPageCount);
 
-                const { data: products, error } = selectedOption === 'Semua Kategori' || selectedOption === null ? await supabase.from('product').select().range(pageVisited, pageVisitedTo-1): await supabase.from('product').select().eq('category', selectedOption).range(pageVisited, pageVisitedTo-1);
+                // const { data: products, error } = selectedOption === 'Semua Kategori' || selectedOption === null ? 
+                //     await supabase.from('product').select().range(pageVisited, pageVisitedTo-1)
+                //     : await supabase.from('product').select().eq('category', selectedOption).range(pageVisited, pageVisitedTo-1)
+
+                let productsQuery
+                if (searchQuery && (selectedOption === 'Semua Kategori' || selectedOption === null)) {
+                    productsQuery = supabase.from('product').select().ilike('productname', `%${searchQuery}%`).range(pageVisited, pageVisitedTo - 1);
+                } else if (searchQuery) {
+                    productsQuery = supabase.from('product').select().eq('category', selectedOption).ilike('productname', `%${searchQuery}%`).range(pageVisited, pageVisitedTo - 1);
+                } else if(selectedOption === 'Semua Kategori' || selectedOption === null) {
+                    productsQuery = supabase.from('product').select().range(pageVisited, pageVisitedTo - 1);
+                } else {    
+                    productsQuery = supabase.from('product').select().eq('category', selectedOption).range(pageVisited, pageVisitedTo - 1);
+                }
+
+                const { data: products, error } = await productsQuery;
 
                 if (products) {
                     setDataItem(products);
@@ -72,7 +105,7 @@ export default function app() {
             // }
         };
         fetchData();
-    }, [pageVisited, pageVisitedTo, totalCount, selectedOption]);
+    }, [pageVisited, pageVisitedTo, totalCount, selectedOption, searchQuery]);
 
     const displayData = dataItem.map((product) => ({
       idproduct: product.idproduct.toString() || 'N/A',
@@ -83,6 +116,16 @@ export default function app() {
       aksi: <ActionButton />
     }));
 
+    const handleSearch = (query: string) => {
+        // setPageNumber(0);
+        setSearchQuery(query);
+    }
+
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if(event.key === 'Enter') {
+            handleSearch(event.currentTarget.value);
+        }
+    }
 
       // ini nanti pindah ke tiap page
     const isAdmin = false //role === "admin"
@@ -100,7 +143,7 @@ export default function app() {
                 <h1 className="heading bold-28 mt-8">Daftar Produk</h1>
                 <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
                     <div className="grid grid-cols-2">
-                        <SearchBar containerWidth="w-full"/>
+                        <SearchBar containerWidth="w-full" placeholder="Cari produk dengan nama..." onSearch={handleSearch} onKeyPress={handleKeyPress}/>
                         <div className="justify-end flex flex-row pr-10 my-5 gap-4">
                             <Dropdown
                                 isOpenProp={isOpen}
@@ -130,9 +173,11 @@ export default function app() {
                     <Table columns={columns} data={displayData}/>
                     <div className='grid grid-cols-3 items-center'>
                         <div className='hidden lg:flex'>
-                            <p className="text-sm text-gray-700 pl-8">
-                                Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisitedTo > totalCount ? totalCount : pageVisitedTo}</span> of{' '}
-                                <span className="font-medium">{totalCount}</span> results
+                            <p className="text-sm text-gray-700 pl-8"> 
+                                {(!columns || !displayData || displayData.length === 0) ? 
+                                `Showing 0 to 0 of 0 results`
+                                : `Showing ${pageVisited + 1} to ${pageVisitedTo > totalCount ? totalCount : pageVisitedTo} of ${totalCount} results`
+                                }
                             </p>
                         </div>
                         <div className='col-start-2 flex justify-center'>
