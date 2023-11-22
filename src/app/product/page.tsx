@@ -6,14 +6,14 @@ import Navbar from "@/src/components/Navbar";
 import Pagination from "@/src/components/Pagination";
 import SearchBar from "@/src/components/SearchBar";
 import Table, { TableColumn } from "@/src/components/Table"
-import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR } from "@/src/constants";
+import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from "@/src/constants";
 import { product } from "@/src/types";
 import { createClient } from "@/src/utils/supabase/client";
 import { useEffect, useState } from "react";
 
 import IconFilter from "../../../public/icons/filter-button-top-table.svg"
 import IconAddTop from "../../../public/icons/add-button-top-table.svg"
-// import Dropdown from "@/src/components/Dropdown";
+import Dropdown from "@/src/components/Dropdown";
 
 const columns: TableColumn[] = [
     { label: 'id', dataKey: 'idproduct', width: '1/6', align: 'center' },
@@ -82,12 +82,13 @@ export default function app() {
       // ini nanti pindah ke tiap page
     const isAdmin = false //role === "admin"
     const isKasir = false
+    const isInventaris = true
 
     return (
         <div>
             <Navbar 
             listOfNav={
-                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : NAV_INVENTARIS))
+                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
             }
             />
             <div className='mx-16'>
@@ -104,7 +105,7 @@ export default function app() {
                                 variant="btn_blue"
                                 size="semibold-14"
                             /> */}
-                            {/* <Dropdown/> */}
+                            <Dropdown/>
                             
                             <Button
                                 type="button"
