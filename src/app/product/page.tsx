@@ -32,22 +32,27 @@ export default function app() {
     const dataPerPage = 10;
     const pageVisited = pageNumber * dataPerPage;
     const pageVisitedTo = pageVisited + dataPerPage;
-    
+    const[isOpen, setIsOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(null);
+    const toggling = () => setIsOpen(!isOpen);
+    const options = ['Semua Kategori', 'Aksesoris', 'Barang Elektronik', 'Makanan dan Minuman', 'Kosmetik dan Kebersihan', 'Peralatan Rumah Tangga']
+    const onOptionClicked = (value:any) => () => {
+        setSelectedOption(value);
+        setIsOpen(false);
+    }
     useEffect (() => {
         const fetchData = async () => {
             try {
                 // const cookieStore = cookies()
                 // const supabase = createClient(cookieStore);
                 const supabase =  createClient();
-                const { data: totalCountResponse} = await supabase.from('product').select('count');
+                const { data: totalCountResponse } = selectedOption === 'Semua Kategori' || selectedOption === null ? await supabase.from('product').select('count') : await supabase.from('product').select('count').eq('category', selectedOption);
                 setTotalCount(totalCountResponse?.[0]?.count || 0);
-        
-                console.log(totalCount);
 
                 const newPageCount = Math.ceil(totalCount/dataPerPage)
                 setPageCount(newPageCount);
 
-                const { data: products, error } = await supabase.from('product').select().range(pageVisited, pageVisitedTo-1);
+                const { data: products, error } = selectedOption === 'Semua Kategori' || selectedOption === null ? await supabase.from('product').select().range(pageVisited, pageVisitedTo-1): await supabase.from('product').select().eq('category', selectedOption).range(pageVisited, pageVisitedTo-1);
 
                 if (products) {
                     setDataItem(products);
@@ -67,7 +72,7 @@ export default function app() {
             // }
         };
         fetchData();
-    }, [pageVisited, pageVisitedTo, totalCount]);
+    }, [pageVisited, pageVisitedTo, totalCount, selectedOption]);
 
     const displayData = dataItem.map((product) => ({
       idproduct: product.idproduct.toString() || 'N/A',
@@ -97,16 +102,13 @@ export default function app() {
                     <div className="grid grid-cols-2">
                         <SearchBar containerWidth="w-full"/>
                         <div className="justify-end flex flex-row pr-10 my-5 gap-4">
-                            {/* <Button
-                                type="button"
-                                title="Semua Kategori"
-                                icon={IconFilter}
-                                round="rounded-lg"
-                                variant="btn_blue"
-                                size="semibold-14"
-                            /> */}
-                            <Dropdown/>
-                            
+                            <Dropdown
+                                isOpenProp={isOpen}
+                                selectedOptionProp={selectedOption}
+                                onToggle={toggling}
+                                onOptionClicked={onOptionClicked}
+                                options={options}
+                            />  
                             <Button
                                 type="button"
                                 title="Tambah Kategori"
