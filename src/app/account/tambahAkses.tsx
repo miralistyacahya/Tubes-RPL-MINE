@@ -80,9 +80,9 @@ function TambahAkses() {
                     <option value="" disabled hidden>
                       Pilih Role
                     </option>
-                      <option value="kasir">admin</option>
+                      <option value="admin">admin</option>
                       <option value="inventaris">inventaris</option>
-                      <option value="admin">kasir</option>
+                      <option value="kasir">kasir</option>
                       </select>                  
                   </div>
                   <div className="modal-action flex justify-center">
