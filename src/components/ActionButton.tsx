@@ -1,8 +1,6 @@
 import Image from "next/image";
 import editButton from "../../public/icons/edit button.svg"
 import deleteButton from "../../public/icons/delete button.svg"
-import addButton from "../../public/icons/add button.svg"
-import addHoverButton from "../../public/icons/add button hover.svg"
 import minusButton from '@/public/icons/min button cart.svg';
 import plusButtonCart from '@/public/icons/plus button cart.svg';
 import closeButtonCart from '@/public/icons/close button cart.svg';
@@ -18,19 +16,6 @@ export default function ActionButton(){
                 <Image src={deleteButton} alt="delete"/>
             </button>
         </div>
-    );
-}
-
-export function AddedButton() {
-    return (
-      <div className="group inline-block relative">
-        <button className="transition-opacity duration-300 ease-in-out opacity-100 group-hover:opacity-0">
-          <Image src={addButton} alt="add" />
-        </button>
-        <button className="transition-opacity duration-300 ease-in-out opacity-0 group-hover:opacity-100 absolute top-0 left-0">
-          <Image src={addHoverButton} alt="add hover" />
-        </button>
-      </div>
     );
 }
 

@@ -5,12 +5,13 @@ import SearchBar from '@/src/components/SearchBar'
 import Table, { TableColumn } from '@/src/components/Table'
 import Pagination from '@/src/components/Pagination'
 import Button from '@/src/components/Button'
-import { AddedButton, MinButton, PlusButton, CloseButton } from '@/src/components/ActionButton';
 import Navbar from '@/src/components/Navbar';
 import Filter from "@/public/icons/filter-button-top-table.svg"
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR } from '@/src/constants';
 import { product } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
+import AddedButton from '@/src/components/AddButton';
+import CartPage from '@/src/components/cart/CartPage';
 
 const columns: TableColumn[] = [
     { label: 'ID', dataKey: 'idproduct', width: '1/4', align: 'center' },
@@ -55,13 +56,41 @@ export default function Cart() {
         fetchData();
     },[pageVisited, pageVisitedTo, totalCount]);
     
-  
+    const [cart, setCart] = useState<(string | number)[][]>([]);
+    const [cartTotal, setCartTotal] = useState<number>(0)
+
+    const handleButtonClick = (productCart: (string | number)[]) => {
+        // Add the product to the cart
+        // id product, name, price, qty
+        setCart((prevCart) => {
+            const existingProduct = prevCart.findIndex((item) => item[0] == productCart[0]);
+            if (existingProduct != -1) {
+                const newCart = [...prevCart];
+                newCart[existingProduct][3] = Number(newCart[existingProduct][3]) + 1
+                setCartTotal((prevTotal) => prevTotal + Number(newCart[existingProduct][2]));
+                return newCart;
+            } else {
+                console.log("total awal", cartTotal)
+
+                setCartTotal((prevTotal) => 
+                { const updated = prevTotal + Number(productCart[2]);
+                console.log("prev total after update:", updated);
+                return updated;
+                });
+
+                return [...prevCart, [...productCart, 1]];
+            }
+        });
+    }; 
+    console.log("akhir bgt", cartTotal)
+
+
     const displayData = dataItem.map((product) => ({
-      idproduct: product.idproduct || 'N/A',
-      productname: product.productname || 'N/A',
-      category: product.category || 'N/A',
-      price: `Rp${product.price.toLocaleString('id-ID')},00` || 'N/A',
-      aksi: <AddedButton />,
+        idproduct: product.idproduct || 'N/A',
+        productname: product.productname || 'N/A',
+        category: product.category || 'N/A',
+        price: `Rp${product.price.toLocaleString('id-ID')},00` || 'N/A',
+        aksi: <AddedButton onButtonClick={() => handleButtonClick([product.idproduct, product.productname, product.price])} />,
     }));
 
     const isAdmin = false;
@@ -113,106 +142,7 @@ export default function Cart() {
                 </div>
                 <div className="rightContent">
                     <div style={{ marginRight: '64px'}}>
-                        <div className="mt-20 bg-white shadow-md sm:rounded-lg">
-                            <h1 className="heading bold-20 pt-4 pb-4 text-center">Keranjang</h1>
-                            <div className="px-6" style={{height: "512px"}}>
-                                {/* <div className="regular-16 text-center" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '92vh' }}><i>Tidak ada barang di keranjang</i></div> */}
-                                <div className= "medium-14 text-[#737272]">Tanggal : 26/10/2023</div>
-                                <div className= "medium-14 text-[#737272]">Pegawai Kasir : Toqeqrin</div>
-                                <div className= "bold-14 grid grid-cols-2 text-center pt-4 pb-2 relative border-b">
-                                    <p>Product</p>
-                                    <p className="ml-6">Qty</p>
-                                </div>
-
-                                <div style={{height: "320px", overflowY: 'auto', overflowX: 'auto'}}>
-                                    <div className="py-2 border-b">
-                                        <div className="flex justify-between items-center">
-                                            <div className="medium-14 py-1" style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
-                                                Pepsodent
-                                            </div>
-                                            <div className="flex items-center">
-                                                <MinButton />
-                                                <div className="medium-14 w-8 text-center">
-                                                    10
-                                                </div>
-                                                <div className="mr-4">
-                                                    <PlusButton />
-                                                </div>
-                                                <CloseButton />
-                                            </div>
-                                        </div>
-                                        <div className="flex justify-between items-center grid grid-cols-2">
-                                            <div className="medium-12 text-[#A3A3A3] flex mr-auto">
-                                                Rp1.000.000,00
-                                            </div>
-                                            <div className="semibold-12 w-28 ml-auto mr-7 text-right">
-                                                Rp300.000,00
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="py-2 border-b">
-                                        <div className="flex justify-between items-center">
-                                            <div className="medium-14 py-1" style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
-                                                Pepsodent Pepsodent Pepsodent Pepsodent  Pepsodent Pepsodent Pepsodent 
-                                            </div>
-                                            <div className="flex items-center">
-                                                <MinButton />
-                                                <div className="medium-14 w-8 text-center">
-                                                    5
-                                                </div>
-                                                <div className="mr-4">
-                                                    <PlusButton />
-                                                </div>
-                                                <CloseButton />
-                                            </div>
-                                        </div>
-                                        <div className="flex justify-between items-center grid grid-cols-2">
-                                            <div className="medium-12 text-[#A3A3A3] flex mr-auto">
-                                                Rp5.000,00
-                                            </div>
-                                            <div className="semibold-12 w-28 ml-auto mr-7 text-right">
-                                                Rp1.000,00
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div className="pt-4 pb-2">
-                                    <div className="flex justify-between semibold-16">
-                                        <div>
-                                            Total
-                                        </div>
-                                        <div>
-                                            Rp1.000.000
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-center grid grid-cols-2">
-                                    <div>
-                                        <Button
-                                            type="button"
-                                            title="Pembayaran Gagal"
-                                            round="rounded-lg"
-                                            variant="btn_red"
-                                            size="bold-12"
-                                        />
-                                    </div>
-                                    <div>
-                                        <Button
-                                            type="button"
-                                            title="Pembayaran Berhasil"
-                                            round="rounded-lg"
-                                            variant="btn_green"
-                                            size="bold-12"
-                                        />
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                        <CartPage cart = { cart } cartTotal = { cartTotal }/>
                     </div>
                 </div>
             </div>
