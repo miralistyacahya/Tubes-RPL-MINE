@@ -4,6 +4,9 @@ import { redirect } from 'next/navigation'
 import './pagelogin.css'
 import icon from '../../../public/icons/online 1.svg'
 import Image from 'next/image'
+import Navbar from '@/src/components/Navbar';
+import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
+
 
 export default function Login({
   searchParams,
@@ -54,18 +57,18 @@ export default function Login({
     return redirect('/login?message=Check email to continue sign in process')
   }
 
+  const isAdmin = false //role === "admin"
+  const isKasir = false
+  const isInventaris = false
+
   return (
-
+    <div>
+    <Navbar 
+    listOfNav={
+        (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
+    }
+    />
     <div className="main-container">
-      {/* Header */}
-      <div className="header-container">
-        {/* Logo */}
-        <div className="logo-container">
-          <Image src= {icon} alt="Logo" />
-          <div className="regular-30 heading">MINE</div>
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="main-content">
         {/* Background Box */}
@@ -104,6 +107,7 @@ export default function Login({
         </button>
       </div>
     </div>
+  </div>
   )
 }
 
