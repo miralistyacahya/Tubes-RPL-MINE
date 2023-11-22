@@ -6,12 +6,12 @@ import Table, { TableColumn } from '@/src/components/Table'
 import Pagination from '@/src/components/Pagination'
 import Button from '@/src/components/Button'
 import Navbar from '@/src/components/Navbar';
+import AddedButton from '@/src/components/cart/AddButton';
+import CartPage from '@/src/components/cart/CartPage';
 import Filter from "@/public/icons/filter-button-top-table.svg"
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR } from '@/src/constants';
 import { product } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
-import AddedButton from '@/src/components/AddButton';
-import CartPage from '@/src/components/cart/CartPage';
 
 const columns: TableColumn[] = [
     { label: 'ID', dataKey: 'idproduct', width: '1/4', align: 'center' },
@@ -59,38 +59,65 @@ export default function Cart() {
     const [cart, setCart] = useState<(string | number)[][]>([]);
     const [cartTotal, setCartTotal] = useState<number>(0)
 
-    const handleButtonClick = (productCart: (string | number)[]) => {
-        // Add the product to the cart
+    const handleButtonPlusClick = (productCart: (string | number)[]) => {
+        // Add the product to the cart by 1
         // id product, name, price, qty
-        setCart((prevCart) => {
-            const existingProduct = prevCart.findIndex((item) => item[0] == productCart[0]);
-            if (existingProduct != -1) {
-                const newCart = [...prevCart];
-                newCart[existingProduct][3] = Number(newCart[existingProduct][3]) + 1
-                setCartTotal((prevTotal) => prevTotal + Number(newCart[existingProduct][2]));
-                return newCart;
-            } else {
-                console.log("total awal", cartTotal)
+        const prevTotal = [cartTotal]
+        const prevCart = [...cart]
 
-                setCartTotal((prevTotal) => 
-                { const updated = prevTotal + Number(productCart[2]);
-                console.log("prev total after update:", updated);
-                return updated;
-                });
+        const existingProduct = prevCart.findIndex((item) => item[0] == productCart[0]);
+        if (existingProduct != -1) {
+            const total = Number(prevTotal) + Number(prevCart[existingProduct][2]);
+            prevCart[existingProduct][3] = Number(prevCart[existingProduct][3]) + 1
+            setCartTotal(total);
+        } else {
+            const total = Number(prevTotal) + Number(productCart[2]);
+            prevCart.push([...productCart, 1]);
+            setCartTotal(total);
+        }
 
-                return [...prevCart, [...productCart, 1]];
-            }
-        });
+        setCart(prevCart);
     }; 
-    console.log("akhir bgt", cartTotal)
 
+    const handleButtonMinClick = (productCart: (string | number)[]) => {
+        // Reduce the product from the cart by 1
+        // id product, name, price, qty
+        const prevTotal = [cartTotal]
+        const prevCart = [...cart]
+        
+        const existingProduct = prevCart.findIndex((item) => item[0] == productCart[0]);
+        const total = Number(prevTotal) - Number(prevCart[existingProduct][2]);
+        const currentQty = Number(prevCart[existingProduct][3]) - 1
+        if (currentQty > 0){
+            prevCart[existingProduct][3] = currentQty;
+        } else {
+            prevCart.splice(existingProduct, 1);
+        }
+        setCartTotal(total);
+        setCart(prevCart);
+    };
+
+    const handleButtonDelClick = (productCart: (string | number)[]) => {
+        const prevTotal = [cartTotal]
+        const prevCart = [...cart]
+        const existingProduct = prevCart.findIndex((item) => item[0] == productCart[0]);
+        const total = Number(prevTotal) - (Number(prevCart[existingProduct][2]) * Number(prevCart[existingProduct][3]));
+        prevCart.splice(existingProduct, 1);
+        setCartTotal(total);
+        setCart(prevCart);
+    };
+
+    const handleButtonFailedClick = () => {
+        setCart([]);
+        setCartTotal(0);
+    }
 
     const displayData = dataItem.map((product) => ({
         idproduct: product.idproduct || 'N/A',
         productname: product.productname || 'N/A',
         category: product.category || 'N/A',
         price: `Rp${product.price.toLocaleString('id-ID')},00` || 'N/A',
-        aksi: <AddedButton onButtonClick={() => handleButtonClick([product.idproduct, product.productname, product.price])} />,
+        aksi: <AddedButton onButtonClick={() => handleButtonPlusClick([product.idproduct, product.productname, product.price])} />,
     }));
 
     const isAdmin = false;
@@ -118,6 +145,7 @@ export default function Cart() {
                                         round="rounded-lg"
                                         variant="btn_blue"
                                         size="semibold-14"
+
                                     />
                                 </div>
                             </div>
@@ -142,7 +170,7 @@ export default function Cart() {
                 </div>
                 <div className="rightContent">
                     <div style={{ marginRight: '64px'}}>
-                        <CartPage cart = { cart } cartTotal = { cartTotal }/>
+                        <CartPage cart = { cart } cartTotal = { cartTotal } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
                     </div>
                 </div>
             </div>
