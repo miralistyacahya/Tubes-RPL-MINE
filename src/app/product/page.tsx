@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 
 import IconFilter from "../../../public/icons/filter-button-top-table.svg"
 import IconAddTop from "../../../public/icons/add-button-top-table.svg"
+// import Dropdown from "@/src/components/Dropdown";
 
 const columns: TableColumn[] = [
     { label: 'id', dataKey: 'idproduct', width: '1/6', align: 'center' },
@@ -95,14 +96,15 @@ export default function app() {
                     <div className="grid grid-cols-2">
                         <SearchBar containerWidth="w-full"/>
                         <div className="justify-end flex flex-row pr-10 my-5 gap-4">
-                            <Button
+                            {/* <Button
                                 type="button"
                                 title="Semua Kategori"
                                 icon={IconFilter}
                                 round="rounded-lg"
                                 variant="btn_blue"
                                 size="semibold-14"
-                            />
+                            /> */}
+                            {/* <Dropdown/> */}
                             
                             <Button
                                 type="button"
