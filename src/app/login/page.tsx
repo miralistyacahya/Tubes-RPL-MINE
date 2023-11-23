@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { headers, cookies } from 'next/headers'
 import { createClient } from '../../utils/supabase/server'
 import { redirect } from 'next/navigation'
@@ -84,7 +85,7 @@ export default function Login({
               Username
             </label>
             <input
-              className="rounded-md px-4 py-2 bg-inherit border mb-6"
+              className="rounded-md px-4 py-2 bg-inherit border mb-3"
               type="text"
               name="username"
               placeholder="Masukkan username anda"
@@ -100,15 +101,15 @@ export default function Login({
               placeholder="••••••••"
               required
             />
-            <button className="btn_blue rounded-md px-4 py-2 semibold-16 mb-6">
+            <button className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
               Masuk
             </button>
 
             <p className="flexCenter regular-14">
               Belum terdaftar ? 
-              <a href="#" className="text-blue-500 hover:text-blue-600 px-1">
+              <Link href='register' className="text-blue-500 hover:text-blue-600 px-1">
                 Daftarkan akunmu
-              </a>
+              </Link>
             </p>
             {searchParams?.message && (
               <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
