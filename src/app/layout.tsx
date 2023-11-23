@@ -25,13 +25,13 @@ export default function RootLayout({
   // const isKasir = true
   return (
     <html lang="en">
-      <body >
+      <body className='flex flex-col min-h-screen'>
         {/* <Navbar 
           listOfNav={
             (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : NAV_INVENTARIS))
           }
         /> */}
-        <main className='relative overflow-hidden bg_dashboard'>
+        <main className='relative overflow-hidden bg_dashboard flex-1'>
           {children}
         </main>
         <Footer />

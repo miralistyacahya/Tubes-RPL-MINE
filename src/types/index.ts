@@ -12,6 +12,11 @@ export interface product {
     stock: number;
 }
 
+export interface category {
+    idcategory: number;
+    categoryname: string;
+}
+
 export interface transaction {
     idtransaction: number;
     username: string;
