@@ -68,7 +68,7 @@ export default function Login({
           (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
       }
       />
-      <div className="animate-in flex-1 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 bg-gray-50">
+      <div className="animate-in flex-1 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 bg_dashboard">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex justify-center">
@@ -88,7 +88,7 @@ export default function Login({
               className="rounded-md px-4 py-2 bg-inherit border mb-6"
               type="text"
               name="username"
-              placeholder="Masukkan username"
+              placeholder="Masukkan username anda"
               required
             />
             <label className="medium-16 heading" htmlFor="password">
@@ -101,15 +101,16 @@ export default function Login({
               placeholder="••••••••"
               required
             />
-            <button className="bg-blue-500 text-white rounded-md px-4 py-2 semibold-16">
+            <button className="btn_blue rounded-md px-4 py-2 semibold-16 mb-4">
               Masuk
             </button>
-            <button
-              formAction={signUp}
-              className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
-            >
-              Daftar
-            </button>
+
+            <p className="regular-14">
+              Belum terdaftar ? 
+              <a href="#" className="text-blue-500 hover:text-blue-600 px-1">
+                Daftarkan akunmu
+              </a>
+            </p>
             {searchParams?.message && (
               <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
                 {searchParams.message}
