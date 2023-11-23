@@ -1,7 +1,6 @@
 import { headers, cookies } from 'next/headers'
 import { createClient } from '../../utils/supabase/server'
 import { redirect } from 'next/navigation'
-import './pagelogin.css'
 import icon from '../../../public/icons/online 1.svg'
 import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
@@ -101,11 +100,11 @@ export default function Login({
               placeholder="••••••••"
               required
             />
-            <button className="btn_blue rounded-md px-4 py-2 semibold-16 mb-4">
+            <button className="btn_blue rounded-md px-4 py-2 semibold-16 mb-6">
               Masuk
             </button>
 
-            <p className="regular-14">
+            <p className="flexCenter regular-14">
               Belum terdaftar ? 
               <a href="#" className="text-blue-500 hover:text-blue-600 px-1">
                 Daftarkan akunmu
