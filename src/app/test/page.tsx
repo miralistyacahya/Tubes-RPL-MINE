@@ -10,6 +10,7 @@ import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
 import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
+import TambahAkses from './tambahAkses';
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -87,6 +88,7 @@ export default function app() {
             <h1 className="heading bold-28 mt-4">Daftar Produk</h1>
             <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
                 <SearchBar />
+                <div className='flex justify-end'><TambahAkses /></div>
                 <Table columns={columns} data={displayData}/>
                 <div className='grid grid-cols-3 items-center'>
                     <div className='hidden lg:flex'>
