@@ -1,4 +1,3 @@
-// tambahData.tsx
 import { SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/src/utils/supabase/client";

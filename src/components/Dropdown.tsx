@@ -8,9 +8,11 @@ interface DropdownProps {
     selectedOptionProp: string | null;
     onToggle: () => void;
     onOptionClicked: (id: string, name: string) => () => void;
+    setCat?: React.Dispatch<React.SetStateAction<string[]>>; 
+    setCatId?: React.Dispatch<React.SetStateAction<string[]>>; 
   }
 
-const Dropdown: React.FC<DropdownProps> = ({ isOpenProp, selectedOptionProp, onToggle, onOptionClicked}) => {  
+const Dropdown: React.FC<DropdownProps> = ({ isOpenProp, selectedOptionProp, onToggle, onOptionClicked, setCat, setCatId}) => {  
     const [options, setOptions] = useState<{ id: string; name: string }[]>([]);
 
     useEffect(() => {
@@ -28,6 +30,12 @@ const Dropdown: React.FC<DropdownProps> = ({ isOpenProp, selectedOptionProp, onT
                     id: category.idcategory,
                     name: category.categoryname,
                 }))]);
+                if(setCat){
+                    setCat(data.map((category: {categoryname: string }) => category.categoryname));
+                }
+                if(setCatId) {
+                    setCatId(data.map((category: {idcategory: string }) => category.idcategory));
+                }
             }
 
         } catch (error) {
