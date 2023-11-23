@@ -63,52 +63,64 @@ export default function Login({
 
   return (
     <div>
-    <Navbar 
-    listOfNav={
-        (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
-    }
-    />
-    <div className="main-container">
-      {/* Main Content */}
-      <div className="main-content">
-        {/* Background Box */}
-        <div className="background-container"></div>
+      <Navbar 
+      listOfNav={
+          (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
+      }
+      />
+      <div className="animate-in flex-1 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 bg-gray-50">
+        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <div className="flex justify-center">
+              <Image src={icon} alt="Logo" className="h-25 w-25" />
+            </div>
+            {/* Welcome Text */}
+            <h1 className="flex justify-center bold-32 heading">Welcome</h1>
 
-        {/* Welcome Text */}
-        <div className="welcome-text">Welcome</div>
-
-        {/* Form */}
-        <div className="form-container">
-          <div className="form-divider"></div>
-          <div className="form-divider"></div>
-          {/* Form input fields */}
+          <form
+            className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
+            action={signIn}
+          >
+            <label className="medium-16 heading" htmlFor="username">
+              Username
+            </label>
             <input
-              className="form-input"
+              className="rounded-md px-4 py-2 bg-inherit border mb-6"
+              type="text"
               name="username"
-              placeholder="Username"
+              placeholder="Masukkan username"
               required
             />
+            <label className="medium-16 heading" htmlFor="password">
+              Password
+            </label>
             <input
-              className="form-input"
+              className="rounded-md px-4 py-2 bg-inherit border mb-6"
+              type="password"
               name="password"
-              placeholder="Password"
+              placeholder="••••••••"
               required
             />
+            <button className="bg-blue-500 text-white rounded-md px-4 py-2 semibold-16">
+              Masuk
+            </button>
+            <button
+              formAction={signUp}
+              className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
+            >
+              Daftar
+            </button>
+            {searchParams?.message && (
+              <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
+                {searchParams.message}
+              </p>
+            )}
+          </form>
         </div>
-
-        {/* Image */}
-        <div className="image-container">
-          <Image src= {icon} alt="Logo" />
         </div>
-
-        {/* Login Button */}
-        <button className="login-button" onClick={signIn}>
-          LOGIN
-        </button>
       </div>
-    </div>
-  </div>
+    </div>  
+
   )
 }
-
 
