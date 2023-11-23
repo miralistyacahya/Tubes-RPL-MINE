@@ -10,10 +10,14 @@ import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from "@/src/constant
 import { product } from "@/src/types";
 import { createClient } from "@/src/utils/supabase/client";
 import { useEffect, useState } from "react";
-
-import IconFilter from "../../../public/icons/filter-button-top-table.svg"
 import IconAddTop from "../../../public/icons/add-button-top-table.svg"
 import Dropdown from "@/src/components/Dropdown";
+
+import { PostgrestError } from '@supabase/supabase-js'
+
+export type DbResult<T> = T extends PromiseLike<infer U> ? U : never
+export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never
+export type DbResultErr = PostgrestError
 
 const columns: TableColumn[] = [
     { label: 'id', dataKey: 'idproduct', width: '1/6', align: 'center' },
@@ -32,14 +36,17 @@ export default function app() {
     const dataPerPage = 10;
     const pageVisited = pageNumber * dataPerPage;
     const pageVisitedTo = pageVisited + dataPerPage;
+
+    // handle dropdown filter kategori
     const[isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState<{ id: string; name: string } | null>(null);
     const toggling = () => setIsOpen(!isOpen);
-    const options = ['Semua Kategori', 'Aksesoris', 'Barang Elektronik', 'Makanan dan Minuman', 'Kosmetik dan Kebersihan', 'Peralatan Rumah Tangga']
-    const onOptionClicked = (value:any) => () => {
-        setSelectedOption(value);
+    const onOptionClicked = (id: string, name: string) => () => {
+        setSelectedOption({ id, name });
         setIsOpen(false);
-    }
+      };
+
+    // handle search
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect (() => {
@@ -48,20 +55,17 @@ export default function app() {
                 // const cookieStore = cookies()
                 // const supabase = createClient(cookieStore);
                 const supabase =  createClient();
-                // const { data: totalCountResponse } = selectedOption === 'Semua Kategori' || selectedOption === null ? 
-                //     await supabase.from('product').select('count')
-                //     : await supabase.from('product').select('count').eq('category', selectedOption)
+                
+                // hitung total page buat pagination (incl. conditional kalo searching + filter)
                 let totalCountQuery;
-
-                // Combine logic for fetching total count based on selected option and search query
-                if (searchQuery && (selectedOption === 'Semua Kategori' || selectedOption === null)) {
+                if (searchQuery && (selectedOption?.name === 'Semua Kategori' || selectedOption === null)) {
                     totalCountQuery = supabase.from('product').select('count').ilike('productname', `%${searchQuery}%`);
                 } else if (searchQuery) {
-                    totalCountQuery = supabase.from('product').select('count').eq('category', selectedOption).ilike('productname', `%${searchQuery}%`);
-                } else if(selectedOption === 'Semua Kategori' || selectedOption === null) {
+                    totalCountQuery = supabase.from('product').select('count').eq('category', selectedOption?.id).ilike('productname', `%${searchQuery}%`);
+                } else if(selectedOption?.name === 'Semua Kategori' || selectedOption === null) {
                     totalCountQuery = supabase.from('product').select('count');
                 } else {
-                    totalCountQuery = supabase.from('product').select('count').eq('category', selectedOption);
+                    totalCountQuery = supabase.from('product').select('count').eq('category', selectedOption.id);
                 }
 
                 const { data: totalCountResponse } = await totalCountQuery;
@@ -70,34 +74,48 @@ export default function app() {
                 const newPageCount = Math.ceil(totalCount/dataPerPage)
                 setPageCount(newPageCount);
 
-                // const { data: products, error } = selectedOption === 'Semua Kategori' || selectedOption === null ? 
-                //     await supabase.from('product').select().range(pageVisited, pageVisitedTo-1)
-                //     : await supabase.from('product').select().eq('category', selectedOption).range(pageVisited, pageVisitedTo-1)
-
-                let productsQuery
-                if (searchQuery && (selectedOption === 'Semua Kategori' || selectedOption === null)) {
-                    productsQuery = supabase.from('product').select().ilike('productname', `%${searchQuery}%`).range(pageVisited, pageVisitedTo - 1);
+                // fetch data produk berdasarkan conditional (ada search/filter/default biasa + sesuai pagination)
+                let productsQuery;
+                if (searchQuery && (selectedOption?.name === 'Semua Kategori' || selectedOption === null)) {
+                    productsQuery = supabase.from('product').select('idproduct, productname, category(categoryname), price, stock').ilike('productname', `%${searchQuery}%`).range(pageVisited, pageVisitedTo - 1);
                 } else if (searchQuery) {
-                    productsQuery = supabase.from('product').select().eq('category', selectedOption).ilike('productname', `%${searchQuery}%`).range(pageVisited, pageVisitedTo - 1);
-                } else if(selectedOption === 'Semua Kategori' || selectedOption === null) {
-                    productsQuery = supabase.from('product').select().range(pageVisited, pageVisitedTo - 1);
+                    productsQuery = supabase.from('product').select('idproduct, productname, category(categoryname), price, stock').eq('category', selectedOption?.id).ilike('productname', `%${searchQuery}%`).range(pageVisited, pageVisitedTo - 1);
+                } else if(selectedOption?.name === 'Semua Kategori' || selectedOption === null) {
+                    productsQuery = supabase.from('product').select('idproduct, productname, category(categoryname), price, stock').range(pageVisited, pageVisitedTo - 1);
                 } else {    
-                    productsQuery = supabase.from('product').select().eq('category', selectedOption).range(pageVisited, pageVisitedTo - 1);
+                    productsQuery = supabase.from('product').select('idproduct, productname, category(categoryname), price, stock').eq('category', selectedOption.id).range(pageVisited, pageVisitedTo - 1);
                 }
 
+                // handle join tables
+                type ProductsWithCategories = DbResultOk<typeof productsQuery>
                 const { data: products, error } = await productsQuery;
+                if (error) throw error
+                const productsWithCategories: ProductsWithCategories = products
+                // console.log(productsWithCategories);
 
-                if (products) {
-                    setDataItem(products);
+                // mapping buat dapetin type product yang sesuai dari hasil join
+                const transformedData = productsWithCategories?.map(item => ({
+                    idproduct: item.idproduct,
+                    productname: item.productname,
+                    category:
+                      (Array.isArray(item.category) && item.category.length > 0
+                        ? (item.category[0] as unknown as { categoryname: any }).categoryname
+                        : typeof item.category === 'object' && item.category !== null
+                        ? (item.category as unknown as { categoryname: any }).categoryname
+                        : '') || '',
+                    price: item.price,
+                    stock: item.stock,
+                }));
+                  
+                //   console.log("transformed:", transformedData);
+                  
+                if (transformedData) {
+                    setDataItem(transformedData);
                 }
 
-                // console.log('Accounts:', accounts);
-                // console.log('Error:', error);
             } catch (error: any) {
                 console.error('Error fetching data:', error.message);
-            }
-
-                 
+            }              
             // if (error) {
             //   // Handle the error
               
@@ -106,6 +124,7 @@ export default function app() {
         };
         fetchData();
     }, [pageVisited, pageVisitedTo, totalCount, selectedOption, searchQuery]);
+
 
     const displayData = dataItem.map((product) => ({
       idproduct: product.idproduct.toString() || 'N/A',
@@ -116,8 +135,8 @@ export default function app() {
       aksi: <ActionButton />
     }));
 
+    // handle search
     const handleSearch = (query: string) => {
-        // setPageNumber(0);
         setSearchQuery(query);
     }
 
@@ -127,7 +146,7 @@ export default function app() {
         }
     }
 
-      // ini nanti pindah ke tiap page
+    // ini nanti pindah ke tiap page
     const isAdmin = false //role === "admin"
     const isKasir = false
     const isInventaris = true
@@ -147,11 +166,10 @@ export default function app() {
                         <div className="justify-end flex flex-row pr-10 my-5 gap-4">
                             <Dropdown
                                 isOpenProp={isOpen}
-                                selectedOptionProp={selectedOption}
+                                selectedOptionProp={selectedOption ? selectedOption.name : null}
                                 onToggle={toggling}
                                 onOptionClicked={onOptionClicked}
-                                options={options}
-                            />  
+                              /> 
                             <Button
                                 type="button"
                                 title="Tambah Kategori"
