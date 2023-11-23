@@ -21,6 +21,8 @@ const columns: TableColumn[] = [
     { label: '', dataKey: 'aksi', width: '1/4', align: 'center' },
 ];
 
+Intl.DateTimeFormat().resolvedOptions().timeZone = 'Asia/Jakarta';
+
 export default function Cart() {
     const [dataItem, setDataItem] = useState<product[]>([]);
     const [pageNumber, setPageNumber] = useState(0);
@@ -53,6 +55,7 @@ export default function Cart() {
             }
 
         };
+
         fetchData();
     },[pageVisited, pageVisitedTo, totalCount]);
     
@@ -110,7 +113,10 @@ export default function Cart() {
     const handleButtonFailedClick = () => {
         setCart([]);
         setCartTotal(0);
-    }
+    };
+
+    const currentDate: Date = new Date();
+    const user: string = "Kasir 1";
 
     const displayData = dataItem.map((product) => ({
         idproduct: product.idproduct || 'N/A',
@@ -170,7 +176,7 @@ export default function Cart() {
                 </div>
                 <div className="rightContent">
                     <div style={{ marginRight: '64px'}}>
-                        <CartPage cart = { cart } cartTotal = { cartTotal } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
+                        <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
                     </div>
                 </div>
             </div>

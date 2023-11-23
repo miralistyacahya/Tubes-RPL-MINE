@@ -9,7 +9,7 @@ interface AddedButtonProps {
 
 const PopupNotification: React.FC = () => {
     return (
-      <div className="regular-14 flex fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-100 text-green-800 py-2 px-8 rounded-lg z-50 outline outline-1 outline-green-500">
+      <div className="regular-14 flex fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-100 text-green-800 py-2 px-6 rounded-lg z-50 outline outline-1 outline-green-500">
         <span className="mr-2">
             <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@ const PopupNotification: React.FC = () => {
                 clip-rule="evenodd" />
             </svg>
         </span>
-        Product is added
+        Produk berhasil ditambahkan
       </div>
     );
   };
