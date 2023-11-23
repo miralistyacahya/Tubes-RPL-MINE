@@ -21,7 +21,7 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
     const month = currentDate.getMonth() + 1;
     const date = currentDate.getDate();
 
-    const handleButtonSuccessClick = async (username: string, totalcost: number) => {
+    const handleButtonSuccessClick = async ( username: string, totalcost: number) => {
         try {
             const supabase = createClient();
             const date = new Date();
@@ -35,9 +35,22 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
                 second: '2-digit',
               });
 
-            await supabase.from('transaction').insert([
-                { username, transactiondate, totalcost }
-            ]);
+            // insert to transaction, return data after inserting
+            const { data, error } = await supabase.from('transaction')
+            .upsert({ username, transactiondate, totalcost })
+            .select();
+
+            if (data) {
+                const newIdTransaction = data[0].idtransaction;
+
+                // insert to orders (transaction detail)
+                await supabase.from('orders').insert(
+                    cart.map((product) => (
+                        { idtransaction: newIdTransaction, idproduct: product[0], quantity: product[3], price: product[2]}
+                    ))
+                );
+            }
+
         } catch (error: any) {
             console.error('Error insert data:', error.message);
         }
@@ -53,7 +66,7 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
                     <div className="regular-16 text-center" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '92vh' }}><i>Tidak ada barang di keranjang</i></div>
                 ) : (
                     <div>
-                        <div className= "medium-14 text-[#737272]">Tanggal : {`${ date }/${ month }/${ year } ${hour}-${minute}-${second}` } </div>
+                        <div className= "medium-14 text-[#737272]">Tanggal : {`${ date }/${ month }/${ year }` } </div>
                         <div className= "medium-14 text-[#737272]">Pegawai Kasir : { user }</div>
                         <div className= "bold-14 grid grid-cols-2 text-center pt-4 pb-2 relative border-b">
                             <p>Product</p>
