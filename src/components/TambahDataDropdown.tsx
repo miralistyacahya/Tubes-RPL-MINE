@@ -39,8 +39,8 @@ function TambahDataDropdown({ tableName, columns, label }: TambahDataDropdownPro
 
       // Setelah berhasil menambahkan data, reset form dan refresh halaman
       setData({});
-      window.location.reload();
       setModal(false);
+      window.location.reload()
     } catch (error) {
       console.error(`Terjadi kesalahan saat menambah ${label}:`, error);
     } finally {
@@ -57,7 +57,11 @@ return (
       <div className="modal">
         <div className="modal-box">
           <div className="modal-header">
-            {/* ... */}
+            <div className="modal-header flex justify-end">
+              <button className="close-button " onClick={handleChange}>
+                <Image src={tutup} alt="edit" />
+              </button>
+            </div>
             <h3 style={{ fontSize: '28px', color: '#295F9A' }} className="font-bold text-lg mb-4">
               Tambah {label}
             </h3>
