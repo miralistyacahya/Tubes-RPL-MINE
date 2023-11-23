@@ -14,6 +14,8 @@ import IconAddTop from "../../../public/icons/add-button-top-table.svg"
 import Dropdown from "@/src/components/Dropdown";
 
 import { PostgrestError } from '@supabase/supabase-js'
+import TambahData from "@/src/components/TambahData";
+import TambahDataDropdown from "@/src/components/TambahDataDropdown";
 
 export type DbResult<T> = T extends PromiseLike<infer U> ? U : never
 export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never
@@ -45,7 +47,9 @@ export default function app() {
         setSelectedOption({ id, name });
         setIsOpen(false);
       };
-
+      const [cat, setCat] = useState<string[]>([]);
+      const [catId, setCatId] = useState<string[]>([]);
+    
     // handle search
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -169,23 +173,27 @@ export default function app() {
                                 selectedOptionProp={selectedOption ? selectedOption.name : null}
                                 onToggle={toggling}
                                 onOptionClicked={onOptionClicked}
+                                setCat={setCat}
+                                setCatId={setCatId}
                               /> 
-                            <Button
+                            {/* <Button
                                 type="button"
                                 title="Tambah Kategori"
                                 icon={IconAddTop}
                                 round="rounded-lg"
                                 variant="btn_blue"
                                 size="semibold-14"
-                            />
-                            <Button
+                            /> */}
+                            <TambahData tableName="category" columns={["categoryname"]} formTitle= {["Nama Kategori"]} label="Kategori" icon={IconAddTop} colToBeValidate="categoryname" />
+                            <TambahDataDropdown tableName="product" columns={["productname", "category", "price", "stock"]} formTitle= {["Nama Produk", "Nama Kategori", "Harga", "Stock"]} label="Produk" icon={IconAddTop} colToBeValidate="productname" dropdownCol="category" dropdownVal={cat} dropdownValId={catId}/>
+                            {/* <Button
                                 type="button"
                                 title="Tambah Produk"
                                 icon={IconAddTop}
                                 round="rounded-lg"
                                 variant="btn_blue"
                                 size="semibold-14"
-                            />
+                            /> */}
                         </div>
                     </div>
                     <Table columns={columns} data={displayData}/>
