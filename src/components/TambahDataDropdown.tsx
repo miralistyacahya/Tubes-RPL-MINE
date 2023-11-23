@@ -11,101 +11,108 @@ interface TambahDataDropdownProps {
   label: string; // Menambah prop label
 }
 
+// ... (other imports)
+
 function TambahDataDropdown({ tableName, columns, label }: TambahDataDropdownProps) {
-  const [data, setData] = useState<Record<string, string>>({});
-  const [modal, setModal] = useState(false);
-  const [isMutating, setIsMutating] = useState(false);
-  const router = useRouter();
-  const supabase = createClient();
-
-  const handleChange = () => {
-    setModal(!modal);
-  };
-
-  const handleSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault();
-    setIsMutating(true);
-
-    try {
-      const { data: responseData, error } = await supabase
-        .from(tableName)
-        .upsert([data]);
-
-      if (error) {
-        throw error;
+    const [data, setData] = useState<Record<string, string>>({});
+    const [modal, setModal] = useState(false);
+    const [isMutating, setIsMutating] = useState(false);
+    const router = useRouter();
+    const supabase = createClient();
+  
+    const handleChange = () => {
+      setModal(!modal);
+    };
+  
+    const handleSubmit = async (e: SyntheticEvent) => {
+      e.preventDefault();
+      setIsMutating(true);
+  
+      try {
+        const { data: responseData, error } = await supabase
+          .from(tableName)
+          .upsert([data]);
+  
+        if (error) {
+          throw error;
+        }
+  
+        console.log(`${label} berhasil ditambahkan:`, responseData);
+  
+        // Setelah berhasil menambahkan data, reset form, close the modal, and do not refresh the page
+        setData({});
+        setModal(false);
+        window.location.reload()
+      } catch (error) {
+        console.error(`Terjadi kesalahan saat menambah ${label}:`, error);
+      } finally {
+        setIsMutating(false);
       }
-
-      console.log(`${label} berhasil ditambahkan:`, responseData);
-
-      // Setelah berhasil menambahkan data, reset form dan refresh halaman
-      setData({});
-      window.location.reload();
-      setModal(false);
-    } catch (error) {
-      console.error(`Terjadi kesalahan saat menambah ${label}:`, error);
-    } finally {
-      setIsMutating(false);
-    }
-  };
-
-return (
-    <div className="mb-4">
+    };
+  
+    return (
+      <div className="mb-4">
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleChange}>
-        + Tambah {label}
-      </button>
-      <input type="checkbox" checked={modal} onChange={handleChange} className="modal-toggle" />
-      <div className="modal">
-        <div className="modal-box">
-          <div className="modal-header">
-            {/* ... */}
-            <h3 style={{ fontSize: '28px', color: '#295F9A' }} className="font-bold text-lg mb-4">
-              Tambah {label}
-            </h3>
-            <form onSubmit={handleSubmit}>
-              {columns.map((column) => (
-                <div key={column} className="form-control">
-                  <label className="label font-bold">{column === "role" ? "Role" : column}</label>
-                  {column === "role" ? (
-                    <select
-                      value={data[column] || ""}
-                      onChange={(e) => setData({ ...data, [column]: e.target.value })}
-                      className="input w-full input-bordered"
-                    >
-                      <option value="" disabled hidden>
-                        Pilih Role
-                      </option>
-                      <option value="admin">admin</option>
-                      <option value="inventaris">inventaris</option>
-                      <option value="kasir">kasir</option>
-                    </select>
+          + Tambah {label}
+        </button>
+        <input type="checkbox" checked={modal} onChange={handleChange} className="modal-toggle" />
+        <div className={`modal ${modal ? 'open' : ''}`}>
+          <div className="modal-box">
+            <div className="modal-header">
+              <div className="modal-header flex justify-end">
+                <button className="close-button " onClick={handleChange}>
+                  <Image src={tutup} alt="edit" />
+                </button>
+              </div>
+              <h3 style={{ fontSize: '28px', color: '#295F9A' }} className="font-bold text-lg mb-4">
+                Tambah {label}
+              </h3>
+              <form onSubmit={handleSubmit}>
+                {columns.map((column) => (
+                  <div key={column} className="form-control">
+                    <label className="label font-bold">{column === "role" ? "Role" : column}</label>
+                    {column === "role" ? (
+                      <select
+                        value={data[column] || ""}
+                        onChange={(e) => setData({ ...data, [column]: e.target.value })}
+                        className="input w-full input-bordered"
+                      >
+                        <option value="" disabled hidden>
+                          Pilih Role
+                        </option>
+                        <option value="admin">admin</option>
+                        <option value="inventaris">inventaris</option>
+                        <option value="kasir">kasir</option>
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        value={data[column] || ""}
+                        onChange={(e) => setData({ ...data, [column]: e.target.value })}
+                        className="input w-full input-bordered"
+                        placeholder={column}
+                      />
+                    )}
+                  </div>
+                ))}
+                <div className="modal-action flex justify-center">
+                  {!isMutating ? (
+                    <button type="submit" className="btn-primary">
+                      <Image src={simpan} alt="edit" />
+                    </button>
                   ) : (
-                    <input
-                      type="text"
-                      value={data[column] || ""}
-                      onChange={(e) => setData({ ...data, [column]: e.target.value })}
-                      className="input w-full input-bordered"
-                      placeholder={column}
-                    />
+                    <button type="button" className="btn loading">
+                      Menyimpan...
+                    </button>
                   )}
                 </div>
-              ))}
-              <div className="modal-action flex justify-center">
-                {!isMutating ? (
-                  <button type="submit" className="btn-primary">
-                    <Image src={simpan} alt="edit" />
-                  </button>
-                ) : (
-                  <button type="button" className="btn loading">
-                    Menyimpan...
-                  </button>
-                )}
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-export default TambahDataDropdown;
+    );
+  }
+  
+  export default TambahDataDropdown;
+  
