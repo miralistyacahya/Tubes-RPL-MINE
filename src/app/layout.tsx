@@ -1,8 +1,5 @@
 // import { GeistSans } from 'geist/font/sans'
 import Footer from '../components/Footer'
-import Navbar from '../components/Navbar'
-import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR } from '../constants'
-import { NavItem } from '../constants/types'
 import './globals.css'
 
 const defaultUrl = process.env.VERCEL_URL
@@ -20,17 +17,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // ini nanti pindah ke tiap page
-  // const isAdmin = false //role === "admin"
-  // const isKasir = true
   return (
     <html lang="en">
       <body className='flex flex-col min-h-screen'>
-        {/* <Navbar 
-          listOfNav={
-            (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : NAV_INVENTARIS))
-          }
-        /> */}
         <main className='relative overflow-hidden bg_dashboard flex-1'>
           {children}
         </main>
