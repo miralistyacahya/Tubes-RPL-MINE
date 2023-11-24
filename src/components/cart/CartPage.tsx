@@ -68,12 +68,12 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
                     <div>
                         <div className= "medium-14 text-[#737272]">Tanggal : {`${ date }/${ month }/${ year }` } </div>
                         <div className= "medium-14 text-[#737272]">Pegawai Kasir : { user }</div>
-                        <div className= "bold-14 grid grid-cols-2 text-center pt-4 pb-2 relative border-b">
+                        <div className= "bold-14 grid grid-cols-2 text-center text-black pt-4 pb-2 relative border-b">
                             <p>Product</p>
                             <p className="ml-6">Qty</p>
                         </div>
 
-                        <div style={{height: "320px", overflowY: 'auto', overflowX: 'auto'}}>
+                        <div className={ "text-black" } style={{height: "320px", overflowY: 'auto', overflowX: 'auto'}}>
                             {cart.map((product, index) => (
                                 <div key={index}>
                                     <div className="py-2 border-b">
@@ -82,18 +82,18 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
                                                 { product[1] }
                                             </div>
                                             <div className="flex items-center">
-                                                <CartButton src = { minusButton } alt = { "min" } onButtonClick={() => handleButtonMinClick([product[0], product[1], product[2]])}/>
+                                                <CartButton src = { minusButton } alt = { "min" } onButtonClick={() => handleButtonMinClick([product[0], product[1], product[2]])} message={"Produk dikurangi dari keranjang"} color={ "red" }/>
                                                 <div className="medium-14 w-8 text-center">
                                                     { product[3] }
                                                 </div>
                                                 <div className="mr-4">
-                                                    <CartButton src = { plusButton } alt = { "plus" } onButtonClick={() => handleButtonPlusClick([product[0], product[1], product[2]])}/>
+                                                    <CartButton src = { plusButton } alt = { "plus" } onButtonClick={() => handleButtonPlusClick([product[0], product[1], product[2]])} message={"Produk ditambahkan ke keranjang"} color = { "green" }/>
                                                 </div>
-                                                <CartButton src = { closeButton } alt = { "delete" } onButtonClick={() => handleButtonDelClick([product[0], product[1], product[2]])}/>
+                                                <CartButton src = { closeButton } alt = { "delete" } onButtonClick={() => handleButtonDelClick([product[0], product[1], product[2]])} message={ "Produk dihapus dari keranjang" } color={ "red" }/>
                                             </div>
                                         </div>
 
-                                        <div className="flex justify-between items-center grid grid-cols-2">
+                                        <div className="justify-between items-center grid grid-cols-2">
                                             <div className="medium-12 text-[#A3A3A3] flex mr-auto">
                                                 { `Rp${product[2].toLocaleString('id-ID')},00` }
                                             </div>
@@ -106,7 +106,7 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
                             ))}
                         </div>
 
-                        <div className="pt-4 pb-2 flex justify-between semibold-16">
+                        <div className="pt-4 pb-2 flex justify-between semibold-16 text-black">
                             <div>
                                 Total
                             </div>
@@ -115,7 +115,7 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
                             </div>
                         </div>
 
-                        <div className="flex justify-center grid grid-cols-2">
+                        <div className="justify-center grid grid-cols-2">
                             <div>
                                 <Button
                                     type="button"

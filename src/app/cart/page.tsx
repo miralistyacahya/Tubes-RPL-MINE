@@ -4,12 +4,10 @@ import { useEffect, useState } from 'react';
 import SearchBar from '@/src/components/SearchBar'
 import Table, { TableColumn } from '@/src/components/Table'
 import Pagination from '@/src/components/Pagination'
-import Button from '@/src/components/Button'
 import Navbar from '@/src/components/Navbar';
 import Dropdown from "@/src/components/Dropdown";
 import AddedButton from '@/src/components/cart/AddButton';
 import CartPage from '@/src/components/cart/CartPage';
-import Filter from "@/public/icons/filter-button-top-table.svg"
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 import { product } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
