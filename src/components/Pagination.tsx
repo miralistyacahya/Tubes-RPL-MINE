@@ -21,6 +21,7 @@ const Pagination = ({setPageNumber, currentPage, pageCount}:{setPageNumber: Reac
         onPageChange={changePage}
         pageRangeDisplayed={1}
         marginPagesDisplayed={1}
+        forcePage={currentPage}
         pageCount={pageCount}
         previousLabel={
           <span className="w-10 h-10 flex items-center justify-center bg-lightGray rounded-md mr-4">
