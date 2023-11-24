@@ -118,14 +118,14 @@ export default function app() {
             }
             />
             <div className='mx-16'>
-                <h1 className="heading bold-28 mt-8">Daftar Produk</h1>
+                <h1 className="heading bold-28 mt-8">Daftar Akun</h1>
                 <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
                     <div className="grid grid-cols-2">
                         <div className="justify-end flex flex-row pr-10 my-5 gap-4 col-start-2">
                             <TambahDataDropdown tableName="account" columns={["username", "password", "role"]} formTitle= {["Username", "Password", "Role"]} label="Akses" icon={IconAddTop} colToBeValidate="username" dropdownCol="role" dropdownVal={["admin", "kasir", "inventaris"]}/>
                         </div>
                     </div>
-                    <Table columns={columns} data={displayData}/>
+                    <Table columns={columns} data={displayData} emptyMessage='Tidak ada akun'/>
                     <div className='grid grid-cols-3 items-center'>
                         <div className='hidden lg:flex'>
                             <p className="text-sm text-gray-700 pl-8"> 
