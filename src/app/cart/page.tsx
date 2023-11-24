@@ -42,6 +42,7 @@ export default function Cart() {
     const toggling = () => setIsOpen(!isOpen);
     const onOptionClicked = (id: string, name: string) => () => {
         setSelectedOption({ id, name });
+        setPageNumber(0);
         setIsOpen(false);
     };
 
@@ -257,9 +258,15 @@ export default function Cart() {
                     </div>
                 </div>
                 <div className="rightContent">
-                    <div style={{ marginRight: '64px'}}>
-                        <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } isInitialCart = { isInitialCart } isFailed = { isFailed } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
-                    </div>
+                    {dataItem.length === 0 ? (
+                        <div className="pb-12" style={{ marginRight: '64px' }}>
+                            <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } isInitialCart = { isInitialCart } isFailed = { isFailed } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
+                        </div>
+                    ) : (
+                        <div style={{ marginRight: '64px'}}>
+                            <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } isInitialCart = { isInitialCart } isFailed = { isFailed } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
