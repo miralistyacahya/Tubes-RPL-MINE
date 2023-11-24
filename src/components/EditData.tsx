@@ -14,6 +14,7 @@ interface EditDataProps<T> {
       key: keyof T;
       readOnly?: boolean;
       options?: string[];
+      valNum? : boolean;
     }[];
     onSave: (editedData: T, onDataChange: any) => void;
     onDataChange: (editedData: T) => void;
@@ -24,6 +25,7 @@ interface EditDataProps<T> {
     const [temp, setTemp] = useState<T>({ ...data });
     const [modal, setModal] = useState(false);
     const [isMutating, setIsMutating] = useState(false);
+    const [isValid, setIsValid] = useState(true);
   
     useEffect(() => {
       setEditedData({ ...data });
@@ -32,6 +34,11 @@ interface EditDataProps<T> {
   
     const handleSubmit = async (e: SyntheticEvent) => {
       e.preventDefault();
+
+      if(!validateInput()) {
+        return;
+      }
+
       setIsMutating(true);
   
       try {
@@ -53,7 +60,21 @@ interface EditDataProps<T> {
       setModal(!modal);
       setEditedData(temp);
     };
-  
+    
+    const validateInput = () => {
+      let isValid = true;
+      for (const field of fields) {
+        const value = editedData[field.key];
+
+        // Validasi angka
+        if (field.valNum && isNaN(Number(value))) {
+          isValid = false;
+        }
+      }
+      setIsValid(isValid);
+      return isValid;
+    };
+
     return (
       <div className="p-2 flex justify-center ">
         <button className="btn-neutral btn-info btn-sm space-x-4" onClick={handleChange}>
@@ -73,7 +94,7 @@ interface EditDataProps<T> {
                   Edit Data
                 </h3>{' '}
               </div>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className={!isValid ? 'group-invalid' : 'group'}>
                 {fields && fields.map((field) => (
                   <div key={field.key.toString()} className="form-control px-2">
                     <label className="label font-semibold text-black">{field.label}</label>
@@ -94,26 +115,36 @@ interface EditDataProps<T> {
                         ))}
                       </select>
                     ) : (
-                      <input
-                        type="text"
-                        value={String(editedData[field.key])}
-                        readOnly={field.readOnly}
-                        onChange={(e) => setEditedData({ ...editedData, [field.key]: e.target.value })}
-                        className={!field.readOnly ? "input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500" : "input w-full input-bordered bg-gray-100 font-regular text-zinc-500"}
-                        placeholder={field.label}
-                      />
+                      <div>
+                        <input
+                          type="text"
+                          value={String(editedData[field.key])}
+                          readOnly={field.readOnly}
+                          onChange={(e) => setEditedData({ ...editedData, [field.key]: e.target.value })}
+                          pattern={(field.key === 'price' || field.key === 'stock') ? '\\d+' : undefined} // Set pattern only for 'price' and 'stock'
+                          placeholder={field.label}
+                          className={!field.readOnly ? "input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500 ... peer" : "input w-full input-bordered bg-gray-100 font-regular text-zinc-500 "}
+  
+                        />
+                        {(field.key === 'price' || field.key === 'stock') && (
+                          <span className="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+                            Please enter a valid number
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                 ))}
                 <div className="modal-action flex justify-center px-28">
                   {!isMutating ? (
-                    <Button 
-                      type= "submit"
-                      title='Simpan'
-                      round='rounded-lg'
-                      variant='btn_blue'
-                      size='semibold-16'
+                    <Button
+                      type="submit"
+                      title="Simpan"
+                      round="rounded-lg"
+                      variant="btn_blue"
+                      size="semibold-16"
                       full={true}
+                      addDetail={!isValid ? 'group-invalid:pointer-events-none group-invalid:opacity-30' : ''}
                     />
                   ) : (
                     <button type="button" className="btn loading">

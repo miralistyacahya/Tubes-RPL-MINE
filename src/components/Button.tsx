@@ -9,12 +9,13 @@ type ButtonProps = {
     size: string;
     full?: boolean
     onButtonClick?: () => void;
+    addDetail? : string;
 }
 
-const Button = ({type, title, icon, round, variant, size, full, onButtonClick} : ButtonProps) => {
+const Button = ({type, title, icon, round, variant, size, full, onButtonClick, addDetail} : ButtonProps) => {
   return (
     <button
-    className={`flexCenter gap-2 ${round} border ${variant} ${full && 'w-full'}`}
+    className={`flexCenter gap-2 ${round} border ${variant} ${full && 'w-full'} ${addDetail}`}
     type = {type} onClick = { onButtonClick }
     >
         {icon && <Image src={icon} alt={title} width={20} height={20} />}
