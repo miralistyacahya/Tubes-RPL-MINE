@@ -16,6 +16,8 @@ import Dropdown from "@/src/components/Dropdown";
 import { PostgrestError } from '@supabase/supabase-js'
 import TambahData from "@/src/components/TambahData";
 import TambahDataDropdown from "@/src/components/TambahDataDropdown";
+import HapusData from "@/src/components/HapusData";
+import EditData from "@/src/components/EditData";
 
 export type DbResult<T> = T extends PromiseLike<infer U> ? U : never
 export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never
@@ -45,6 +47,7 @@ export default function app() {
     const toggling = () => setIsOpen(!isOpen);
     const onOptionClicked = (id: string, name: string) => () => {
         setSelectedOption({ id, name });
+        setPageNumber(0);
         setIsOpen(false);
       };
       const [cat, setCat] = useState<string[]>([]);
@@ -129,6 +132,52 @@ export default function app() {
         fetchData();
     }, [pageVisited, pageVisitedTo, totalCount, selectedOption, searchQuery]);
 
+    const handleDelete = async (productname: string) => {
+        try {
+          const supabase = createClient();
+          await supabase.from('product').delete().eq('productname', productname);
+    
+          // Set state to reflect the updated data without the deleted user
+          setDataItem((prevData) => prevData.filter((product) => product.productname !== productname));
+    
+          setTotalCount((prevCount) => prevCount - 1); // Update total count after deletion
+        } catch (error: any) {
+          console.error('Error deleting data:', error.message);
+        }
+      };
+
+      const handleProductChange = (editedProduct: product) => {
+        // Find the account in dataItem and update its role
+        const updatedDataItem = dataItem.map((product) =>
+            product.idproduct === editedProduct.idproduct ? { ...product, price: editedProduct.price, stock:editedProduct.stock } : product
+        );
+        setDataItem(updatedDataItem);
+    };
+
+      const handleSave = async (editedProduct: product, handleProductChange : any) => {
+        try {
+            const supabase = createClient();
+            const { data, error } = await supabase
+            .from('product')
+            .update({
+                price: editedProduct.price,
+                stock: editedProduct.stock
+              })
+            .eq('idproduct', editedProduct.idproduct);
+    
+          if (error) {
+            console.log(error)
+            throw error;
+            
+          }
+    
+          console.log('Data berhasil diubah:', data);
+    
+          handleProductChange(editedProduct);
+        } catch (error) {
+          console.error('Terjadi kesalahan:', error);
+        }
+    }
 
     const displayData = dataItem.map((product) => ({
       idproduct: product.idproduct.toString() || 'N/A',
@@ -136,12 +185,47 @@ export default function app() {
       category: product.category || 'N/A',
       price: `Rp${product.price.toLocaleString('id-ID')},00` || 'N/A',
       stock: product.stock.toString() || 'N/A',
-      aksi: <ActionButton />
+      aksi: (
+        <div className="flex justify-center">
+            {/* <EditAkses account={account} onRoleChange={handleRoleChange} /> */}
+            <EditData
+                data={product}
+                fields={[
+                    { label: 'ID Produk', key: 'idproduct', readOnly: true },
+                    { label: 'Nama Produk', key: 'productname', readOnly: true },
+                    { label: 'Kategori', key: 'category', readOnly: true },
+                    { label: 'Harga', key: 'price', readOnly: false },
+                    { label: 'Stok', key: 'stock', readOnly: false },
+                ]}
+                onSave={handleSave}
+                onDataChange={handleProductChange}
+                // renderTrigger={({ openModal }) => (
+                //     <button className="btn-neutral btn-info btn-sm" onClick={openModal}>
+                //     <Image src={edit} alt="edit" />
+                //     </button>
+                // )}
+                // modalTitle="Ubah Akses"
+                // closeIcon={<Image src={tutup} alt="edit" />}
+                // saveButtonIcon={<Image src={simpan} alt="edit" />}
+            />
+            <HapusData
+                data={product.productname}
+                onDelete={(deletedProduct) => handleDelete(deletedProduct)}
+                renderInfo={(productname) => (
+                    <p style={{ fontSize: '24px', color: '#000000', wordWrap: 'break-word' }}>
+                    Apakah Anda yakin ingin menghapus data product {productname}?
+                    </p>
+                )}
+                modalTitle="Hapus Akses" // Ganti dengan judul yang sesuai
+            />
+        </div>
+      )
     }));
 
     // handle search
     const handleSearch = (query: string) => {
         setSearchQuery(query);
+        setPageNumber(0);
     }
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
