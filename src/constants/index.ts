@@ -11,5 +11,9 @@ export const NAV_KASIR:NavItem[] = [
 ]
 
 export const NAV_INVENTARIS:NavItem[] = [
-    { href: '/', key: 'inventaris', label: 'Daftar Produk'},
+    { href: '/product', key: 'inventaris', label: 'Daftar Produk'},
+]
+
+export const NAV_PUBLIC:NavItem[] = [
+    
 ]

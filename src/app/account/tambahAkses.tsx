@@ -1,8 +1,9 @@
+import TambahData from "@/src/components/TambahData";
 import TambahDataDropdown from "@/src/components/TambahDataDropdown";
 function TambahAkses() {
   return (
     <div className="mb-4">
-      <TambahDataDropdown tableName="account" columns={["Username", "Password", "role"]} label="Akses" />
+      <TambahData tableName="account" columns={["Username", "Password", "role"]} label="Akses" />
     </div>
   );
 }
