@@ -191,11 +191,11 @@ export default function app() {
             <EditData
                 data={product}
                 fields={[
-                    { label: 'ID Produk', key: 'idproduct', readOnly: true },
-                    { label: 'Nama Produk', key: 'productname', readOnly: true },
-                    { label: 'Kategori', key: 'category', readOnly: true },
-                    { label: 'Harga', key: 'price', readOnly: false },
-                    { label: 'Stok', key: 'stock', readOnly: false },
+                    { label: 'ID Produk', key: 'idproduct', readOnly: true, valNum: false },
+                    { label: 'Nama Produk', key: 'productname', readOnly: true, valNum: false },
+                    { label: 'Kategori', key: 'category', readOnly: true, valNum: false },
+                    { label: 'Harga', key: 'price', readOnly: false, valNum: true },
+                    { label: 'Stok', key: 'stock', readOnly: false, valNum: true },
                 ]}
                 onSave={handleSave}
                 onDataChange={handleProductChange}
