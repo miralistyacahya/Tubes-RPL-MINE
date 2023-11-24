@@ -1,25 +1,37 @@
+import { useState, useEffect } from 'react';
 import CartButton from '@/src/components/cart/CartButton';
 import Button from '@/src/components/Button'
 import plusButton from '@/public/icons/plus button cart.svg';
 import minusButton from '@/public/icons/min button cart.svg';
 import closeButton from '@/public/icons/close button cart.svg';
 import { createClient } from '@/src/utils/supabase/client';
+import PopupNotification from './PopupNotification';
 
 interface CartProps {
     user: string;
     currentDate: Date;
     cart: (string | number)[][];
     cartTotal: number;
+    isInitialCart: boolean;
+    isFailed: boolean;
     handleButtonPlusClick: (productCart: (string | number)[]) => void;
     handleButtonMinClick: (productCart: (string | number)[]) => void;
     handleButtonDelClick: (productCart: (string | number)[]) => void;
     handleButtonFailedClick: () => void;
 }
 
-const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, handleButtonPlusClick, handleButtonMinClick, handleButtonDelClick, handleButtonFailedClick }) => {
+const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, isInitialCart, isFailed, handleButtonPlusClick, handleButtonMinClick, handleButtonDelClick, handleButtonFailedClick }) => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
     const date = currentDate.getDate();
+    const [isEmpty, setIsEmpty] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    useEffect(() => {
+        if (cart.length === 0 && !isInitialCart) {
+            setIsEmpty(true);
+        }
+    }, [cart, isInitialCart]);
 
     const handleButtonSuccessClick = async ( username: string, totalcost: number) => {
         try {
@@ -56,6 +68,7 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
         }
 
         handleButtonFailedClick();
+        setIsSuccess(true);
     }
 
     return (
@@ -139,6 +152,26 @@ const CartPage: React.FC<CartProps> = ({ user, currentDate, cart, cartTotal, han
                         </div>
                         </div>
                     )}
+                    
+                    {(isEmpty || isFailed) && !isSuccess && (
+                        <PopupNotification
+                            message={"Keranjang dihapus"}
+                            color={"red"}
+                            isClicked={isEmpty}
+                            onClicked={(onClicked) => setIsEmpty(onClicked)}
+                        />
+                    )}
+
+                    {/* transaction success */}
+                    {isEmpty && isSuccess && (
+                        <PopupNotification
+                            message={"Transaksi berhasil"}
+                            color={"green"}
+                            isClicked={isSuccess}
+                            onClicked={(onClicked) => setIsSuccess(onClicked)}
+                        />
+                    )}
+
                 </div>
             </div>
     )

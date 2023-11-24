@@ -138,7 +138,17 @@ export default function Cart() {
 
     // handle cart
     const [cart, setCart] = useState<(string | number)[][]>([]);
-    const [cartTotal, setCartTotal] = useState<number>(0)
+    const [cartTotal, setCartTotal] = useState<number>(0);
+    const [isInitialCart, setIsInitialCart] = useState(true);
+    const [isFailed, setIsFailed] = useState(false);
+
+    useEffect(() => {
+        if (isFailed) {
+            setTimeout(() => {
+                setIsFailed(false);
+            }, 2000);
+        }
+    }, [isFailed]);
 
     const handleButtonPlusClick = (productCart: (string | number)[]) => {
         // Add the product to the cart by 1
@@ -158,6 +168,7 @@ export default function Cart() {
         }
 
         setCart(prevCart);
+        setIsInitialCart(false);
     }; 
 
     const handleButtonMinClick = (productCart: (string | number)[]) => {
@@ -191,6 +202,7 @@ export default function Cart() {
     const handleButtonFailedClick = () => {
         setCart([]);
         setCartTotal(0);
+        setIsFailed(true);
     };
 
     const currentDate: Date = new Date();
@@ -203,9 +215,9 @@ export default function Cart() {
     return (
         <div>
             <Navbar 
-            listOfNav={
-                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
-            }
+                listOfNav={
+                    (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
+                }
             />
             <div className="flexContainer">
                 <div className="leftContent">
@@ -246,7 +258,7 @@ export default function Cart() {
                 </div>
                 <div className="rightContent">
                     <div style={{ marginRight: '64px'}}>
-                        <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
+                        <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } isInitialCart = { isInitialCart } isFailed = { isFailed } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
                     </div>
                 </div>
             </div>
