@@ -94,7 +94,7 @@ export default function app() {
 
                         {/* search bar di branch product */}
                         {/* <SearchBar containerWidth="w-full" placeholder="Cari produk dengan nama..." onSearch={handleSearch} onKeyPress={handleKeyPress}/> */}
-                        <div className="justify-end flex flex-row pr-10 my-5 gap-4">
+                        <div className="justify-end flex flex-row pr-10 my-5 gap-4 col-start-2 ">
                             {/* <Dropdown
                                 isOpenProp={isOpen}
                                 selectedOptionProp={selectedOption ? selectedOption.name : null}
@@ -104,7 +104,7 @@ export default function app() {
                                 setCatId={setCatId}
                               />  */}
                             
-                            <TambahData tableName="category" columns={["categoryname"]} formTitle= {["Nama Kategori"]} label="Kategori" icon={IconAddTop} colToBeValidate="categoryname" />
+                            {/* <TambahData tableName="category" columns={["categoryname"]} formTitle= {["Nama Kategori"]} label="Kategori" icon={IconAddTop} colToBeValidate="categoryname" /> */}
                             {/* icon -> buat icon di buttonnya ; colToBeValidate -> kalo misal perlu validasi, ex: productName gabole dobel. kalo gaada yang perlu divalidasi gausa ditambahin*/}
                             <TambahDataDropdown tableName="product" columns={["productname", "category", "price", "stock"]} formTitle= {["Nama Produk", "Nama Kategori", "Harga", "Stock"]} label="Produk" icon={IconAddTop} colToBeValidate="productname" dropdownCol="category" dropdownVal={["Admin", "Kasir", "Inventaris"]}/>
                             {/* dropdowncol -> column yang bakal jadi dropdown, dropdownval -> pilihan dropdownnya. misal dropdownVal={["Admin", "Inventaris", "Kasir"]}, dropdownValId gausaa diisi, itu buat category*/}
