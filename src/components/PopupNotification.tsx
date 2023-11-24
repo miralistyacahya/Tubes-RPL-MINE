@@ -11,6 +11,7 @@ interface PopupProps {
 }
 
 const PopupNotification: React.FC<PopupProps> = ({ message, color, isClicked, onClicked }) => {
+    // color: green (ex: transaksi berhasil) icon: check, red (ex: transaksi gagal) icon: warning
     const bgcolor: string = color === "green" ? "bg-green-100" : "bg-red-100";
     const textcolor: string = color === "green" ? "text-green-800" : "text-red-800";
     const outlinecolor: string = color === "green" ? "outline-green-500" : "outline-red-500";
