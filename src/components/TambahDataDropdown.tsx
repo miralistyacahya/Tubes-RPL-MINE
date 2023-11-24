@@ -26,13 +26,19 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
     const [isMutating, setIsMutating] = useState(false);
     const router = useRouter();
     const supabase = createClient();
-  
+    const [isValid, setIsValid] = useState(true);
+
     const handleChange = () => {
       setModal(!modal);
     };
   
     const handleSubmit = async (e: SyntheticEvent) => {
       e.preventDefault();
+
+      if(!validateInput()) {
+        return;
+      }
+
       setIsMutating(true);
   
       try {
@@ -74,6 +80,22 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
       }
     };
   
+    const validateInput = () => {
+      let isValid = true;
+    
+      for (const column of columns) {
+        const value = data[column];
+    
+        // Validasi angka untuk kolom 'price' atau 'stock'
+        if ((column === 'price' || column === 'stock') && isNaN(Number(value))) {
+          isValid = false;
+        }
+      }
+    
+      setIsValid(isValid);
+      return isValid;
+    };
+
     return (
       <div>
         {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleChange}>
@@ -100,7 +122,7 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
               <h3 style={{ fontSize: '28px', color: '#295F9A' }} className="font-bold text-lg mb-4 px-2">
                 Tambah {label}
               </h3>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className={!isValid ? 'group-invalid' : 'group'}>
                 {columns.map((column, index) => (
                   <div key={column} className="form-control px-2">
                     <label className="label font-semibold text-black">{formTitle[index]}</label>
@@ -120,13 +142,21 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
                         ))}
                       </select>
                     ) : (
-                      <input
-                        type="text"
-                        value={data[column] || ""}
-                        onChange={(e) => setData({ ...data, [column]: e.target.value })}
-                        className="input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500"
-                        placeholder={formTitle[index].toLowerCase() + "..."}
-                      />
+                      <div>
+                        <input
+                          type="text"
+                          value={data[column] || ""}
+                          onChange={(e) => setData({ ...data, [column]: e.target.value })}
+                          pattern={(column === 'price' || column === 'stock') ? '\\d+' : undefined} // Set pattern only for 'price' and 'stock'
+                          placeholder={formTitle[index].toLowerCase() + "..."}
+                          className="input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500 ... peer"
+                        />
+                        {(column === 'price' || column === 'stock') && (
+                          <span className="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+                            Please enter a valid number
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -139,6 +169,7 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
                       variant='btn_blue'
                       size='semibold-16'
                       full={true}
+                      addDetail={!isValid ? 'group-invalid:pointer-events-none group-invalid:opacity-30' : ''}
                     />
                   ) : (
                     <button type="button" className="btn loading">

@@ -130,6 +130,14 @@ body {
     @apply text-[32px] font-[700] leading-[120%];
   }
 
+  .bold-28 {
+    @apply text-[28px] font-[700];
+  }
+
+  .bold-24 {
+    @apply text-[24px] font-[700];
+  }
+
   .bold-20 {
     @apply text-[20px] font-[700];
   }
@@ -149,6 +157,18 @@ body {
   /* button */
   .btn_blue {
     @apply bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600
+  }
+
+  .btn_blue_outline {
+    @apply px-6 py-2 text-blue-500 hover:text-blue-600 transition-all border-solid border-blue-500 hover:border-blue-600
+  }
+
+  .btn_red {
+    @apply bg-red-500 px-4 py-2 text-white transition-all hover:bg-red-600
+  }
+
+  .btn_cancel {
+    @apply bg-zinc-200 px-4 py-2 text-black transition-all hover:bg-zinc-300
   }
 
   .bg_dashboard {

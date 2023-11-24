@@ -99,3 +99,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 };
 
 export default Modal;
+

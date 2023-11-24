@@ -8,6 +8,12 @@ import ActionButton from '@/src/components/ActionButton';
 import { useEffect, useState } from 'react';
 import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
+import Navbar from '@/src/components/Navbar';
+import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
+import TambahAkses from './tambahAkses';
+import TambahData from '@/src/components/TambahData';
+import TambahDataDropdown from '@/src/components/TambahDataDropdown';
+import IconAddTop from "../../../public/icons/add-button-top-table.svg"
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -18,19 +24,29 @@ const columns: TableColumn[] = [
 
 export default function app() {
     const [dataItem, setDataItem] = useState<account[]>([]);
-    
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    const dataPerPage = 10;
+    const pageVisited = pageNumber * dataPerPage;
+    const pageVisitedTo = pageVisited + dataPerPage;
+
     useEffect (() => {
         const fetchData = async () => {
             try {
                 // const cookieStore = cookies()
                 // const supabase = createClient(cookieStore);
                 const supabase =  createClient();
-                // const user = supabase.auth.getUser();
+                const { data: totalCountResponse} = await supabase.from('account').select('count');
+                setTotalCount(totalCountResponse?.[0]?.count || 0);
+        
+                console.log(totalCount);
 
-                // console.log(user);
+                const newPageCount = Math.ceil(totalCount/dataPerPage)
+                setPageCount(newPageCount);
 
-                const { data: accounts, error } = await supabase.from('account').select();
-            
+                const { data: accounts, error } = await supabase.from('account').select().range(pageVisited, pageVisitedTo-1);
+
                 if (accounts) {
                     setDataItem(accounts);
                 }
@@ -49,45 +65,81 @@ export default function app() {
             // }
         };
         fetchData();
-    }, []);
+    }, [pageVisited, pageVisitedTo, totalCount]);
     
-    const [pageNumber, setPageNumber] = useState(0);
 
-    const dataPerPage = 10;
-    const pageVisited = pageNumber * dataPerPage;
-
-    const displayData = dataItem.slice(pageVisited, pageVisited + dataPerPage).map((account) => ({
+    const displayData = dataItem.map((account) => ({
       username: account.username || 'N/A',
       password: account.password || 'N/A',
       role: account.role || 'N/A',
       aksi: <ActionButton />
     }));
 
-    const pageCount = Math.ceil(dataItem.length/dataPerPage);
+
+    const isAdmin = false //role === "admin"
+    const isKasir = false
+    const isInventaris = false
 
     return (
-        <div className='mx-16'>
-            <h1 className="heading bold-20 mt-4">Daftar Produk</h1>
-            <div className="mt-4 mb-8 bg-white shadow-md sm:rounded-lg">
-                <SearchBar />
-                <Table columns={columns} data={displayData}/>
-                <div className='grid grid-cols-3 items-center'>
-                    <div className='hidden lg:flex'>
-                        <p className="text-sm text-gray-700 pl-8">
-                            Showing <span className="font-medium">{pageVisited}</span> to <span className="font-medium">{pageVisited + dataPerPage}</span> of{' '}
-                            <span className="font-medium">{dataItem.length}</span> results
-                        </p>
+        <div>
+            <Navbar 
+            listOfNav={
+                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
+            }
+            />
+            <div className='mx-16'>
+                <h1 className="heading bold-28 mt-8">Daftar Produk</h1>
+                <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
+                    <div className="grid grid-cols-2">
+
+                        {/* search bar di branch product */}
+                        {/* <SearchBar containerWidth="w-full" placeholder="Cari produk dengan nama..." onSearch={handleSearch} onKeyPress={handleKeyPress}/> */}
+                        <div className="justify-end flex flex-row pr-10 my-5 gap-4 col-start-2 ">
+                            {/* <Dropdown
+                                isOpenProp={isOpen}
+                                selectedOptionProp={selectedOption ? selectedOption.name : null}
+                                onToggle={toggling}
+                                onOptionClicked={onOptionClicked}
+                                setCat={setCat}
+                                setCatId={setCatId}
+                              />  */}
+                            
+                            {/* <TambahData tableName="category" columns={["categoryname"]} formTitle= {["Nama Kategori"]} label="Kategori" icon={IconAddTop} colToBeValidate="categoryname" /> */}
+                            {/* icon -> buat icon di buttonnya ; colToBeValidate -> kalo misal perlu validasi, ex: productName gabole dobel. kalo gaada yang perlu divalidasi gausa ditambahin*/}
+                            <TambahDataDropdown tableName="product" columns={["productname", "category", "price", "stock"]} formTitle= {["Nama Produk", "Nama Kategori", "Harga", "Stock"]} label="Produk" icon={IconAddTop} colToBeValidate="productname" dropdownCol="category" dropdownVal={["Admin", "Kasir", "Inventaris"]}/>
+                            {/* dropdowncol -> column yang bakal jadi dropdown, dropdownval -> pilihan dropdownnya. misal dropdownVal={["Admin", "Inventaris", "Kasir"]}, dropdownValId gausaa diisi, itu buat category*/}
+                            {/* <Button
+                                type="button"
+                                title="Tambah Produk"
+                                icon={IconAddTop}
+                                round="rounded-lg"
+                                variant="btn_blue"
+                                size="semibold-14"
+                            /> */}
+                        </div>
                     </div>
-                    <div className='col-start-2 flex justify-center'>
-                        <Pagination 
-                        setPageNumber={setPageNumber}
-                        currentPage={pageNumber}
-                        pageCount={pageCount}
-                        />
-                    </div>
+                    <Table columns={columns} data={displayData}/>
+                    <div className='grid grid-cols-3 items-center'>
+                        <div className='hidden lg:flex'>
+                            <p className="text-sm text-gray-700 pl-8"> 
+                                {(!columns || !displayData || displayData.length === 0) ? 
+                                `Showing 0 to 0 of 0 results`
+                                : `Showing ${pageVisited + 1} to ${pageVisitedTo > totalCount ? totalCount : pageVisitedTo} of ${totalCount} results`
+                                }
+                            </p>
+                        </div>
+                        <div className='col-start-2 flex justify-center'>
+                            <Pagination
+                            setPageNumber={setPageNumber}
+                            currentPage={pageNumber}
+                            pageCount={pageCount}
+                            />
+                        </div>
+                    </div>    
                 </div>
-                
             </div>
+        
         </div>
+        
     )
 }

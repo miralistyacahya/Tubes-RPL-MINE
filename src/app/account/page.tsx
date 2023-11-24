@@ -122,7 +122,7 @@ export default function app() {
                 <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
                     <div className="grid grid-cols-2">
                         <div className="justify-end flex flex-row pr-10 my-5 gap-4 col-start-2">
-                            <TambahDataDropdown tableName="account" columns={["username", "password", "role"]} formTitle= {["Username", "Password", "Role"]} label="Akses" icon={IconAddTop} colToBeValidate="username" dropdownCol="role" dropdownVal={["Admin", "Kasir", "Inventaris"]}/>
+                            <TambahDataDropdown tableName="account" columns={["username", "password", "role"]} formTitle= {["Username", "Password", "Role"]} label="Akses" icon={IconAddTop} colToBeValidate="username" dropdownCol="role" dropdownVal={["admin", "kasir", "inventaris"]}/>
                         </div>
                     </div>
                     <Table columns={columns} data={displayData}/>
