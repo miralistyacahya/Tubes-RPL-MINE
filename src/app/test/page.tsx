@@ -14,6 +14,8 @@ import TambahAkses from './tambahAkses';
 import TambahData from '@/src/components/TambahData';
 import TambahDataDropdown from '@/src/components/TambahDataDropdown';
 import IconAddTop from "../../../public/icons/add-button-top-table.svg"
+import Button from '@/src/components/Button';
+import PopupNotification from '@/src/components/PopupNotification';
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -30,6 +32,14 @@ export default function app() {
     const dataPerPage = 10;
     const pageVisited = pageNumber * dataPerPage;
     const pageVisitedTo = pageVisited + dataPerPage;
+    const [isSaved, setIsSaved] = useState(false);
+
+    const handleButtonClick = () => {   
+        setIsSaved(true);
+        setTimeout(() => {
+            setIsSaved(false);
+        }, 1000);
+    }
 
     useEffect (() => {
         const fetchData = async () => {
@@ -108,17 +118,20 @@ export default function app() {
                             {/* icon -> buat icon di buttonnya ; colToBeValidate -> kalo misal perlu validasi, ex: productName gabole dobel. kalo gaada yang perlu divalidasi gausa ditambahin*/}
                             <TambahDataDropdown tableName="product" columns={["productname", "category", "price", "stock"]} formTitle= {["Nama Produk", "Nama Kategori", "Harga", "Stock"]} label="Produk" icon={IconAddTop} colToBeValidate="productname" dropdownCol="category" dropdownVal={["Admin", "Kasir", "Inventaris"]}/>
                             {/* dropdowncol -> column yang bakal jadi dropdown, dropdownval -> pilihan dropdownnya. misal dropdownVal={["Admin", "Inventaris", "Kasir"]}, dropdownValId gausaa diisi, itu buat category*/}
-                            {/* <Button
+                            <Button
                                 type="button"
                                 title="Tambah Produk"
                                 icon={IconAddTop}
                                 round="rounded-lg"
                                 variant="btn_blue"
                                 size="semibold-14"
-                            /> */}
+                                onButtonClick = {handleButtonClick}
+                            />
                         </div>
                     </div>
                     <Table columns={columns} data={displayData}/>
+                    
+
                     <div className='grid grid-cols-3 items-center'>
                         <div className='hidden lg:flex'>
                             <p className="text-sm text-gray-700 pl-8"> 
@@ -139,6 +152,16 @@ export default function app() {
                 </div>
             </div>
         
+        
+            {isSaved && (
+            <PopupNotification
+            message={"Produk berhasil ditambah"}
+            color={"green"}
+            isClicked={isSaved}
+            onClicked={(onClicked) => setIsSaved(onClicked)}
+          />
+        )}
+
         </div>
         
     )
