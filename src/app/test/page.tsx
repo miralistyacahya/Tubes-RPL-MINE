@@ -4,7 +4,6 @@ import SearchBar from '@/src/components/SearchBar'
 import Table, { TableColumn } from '../../components/Table'
 import Pagination from '@/src/components/Pagination'
 import { cookies } from 'next/headers';
-import ActionButton from '@/src/components/ActionButton';
 import { useEffect, useState } from 'react';
 import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
@@ -82,7 +81,7 @@ export default function app() {
       username: account.username || 'N/A',
       password: account.password || 'N/A',
       role: account.role || 'N/A',
-      aksi: <ActionButton />
+    //   aksi: <ActionButton />
     }));
 
 

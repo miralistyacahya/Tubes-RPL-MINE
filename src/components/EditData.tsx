@@ -6,6 +6,7 @@ import simpan from '../../public/icons/simpan.svg';
 import edit from '../../public/icons/edit button.svg';
 import Image from 'next/image';
 import Button from './Button';
+import PopupNotification from './PopupNotification';
 
 interface EditDataProps<T> {
     data: T;
@@ -18,15 +19,18 @@ interface EditDataProps<T> {
     }[];
     onSave: (editedData: T, onDataChange: any) => void;
     onDataChange: (editedData: T) => void;
+    modalTitle: string;
   }
   
-  function EditData<T>({ data, fields, onSave, onDataChange}: EditDataProps<T>) {
+  function EditData<T>({ data, fields, onSave, onDataChange, modalTitle}: EditDataProps<T>) {
     const [editedData, setEditedData] = useState<T>({ ...data });
     const [temp, setTemp] = useState<T>({ ...data });
     const [modal, setModal] = useState(false);
     const [isMutating, setIsMutating] = useState(false);
     const [isValid, setIsValid] = useState(true);
-  
+    const [isSaved, setIsSaved] = useState(false);
+    const [isFailed, setIsFailed] = useState(false)
+
     useEffect(() => {
       setEditedData({ ...data });
       setTemp({...data});
@@ -42,15 +46,19 @@ interface EditDataProps<T> {
       setIsMutating(true);
   
       try {
-        // Simulate asynchronous data update (replace with actual update logic)
-        // const updatedData = await yourUpdateFunction(editedData);
-  
-        // Notify parent component about the data change
         onSave(editedData, onDataChange);
         setTemp(editedData);
         setModal(false);
+        setIsSaved(true);
+        setTimeout(() => {
+            setIsSaved(false);
+        }, 3000);
       } catch (error) {
-        console.error('Terjadi kesalahan:', error);
+        // console.error('Terjadi kesalahan:', error);
+          setIsFailed(true);
+          setTimeout(() => {
+              setIsFailed(false);
+          }, 1000);
       } finally {
         setIsMutating(false);
       }
@@ -91,7 +99,7 @@ interface EditDataProps<T> {
               </div>
               <div className="flex justify-left mb-4">
                 <h3 style={{ fontSize: '28px', color: '#295F9A' }} className="font-bold text-lg mb-4 px-2">
-                  Edit Data
+                  {modalTitle}
                 </h3>{' '}
               </div>
               <form onSubmit={handleSubmit} className={!isValid ? 'group-invalid' : 'group'}>
@@ -155,6 +163,22 @@ interface EditDataProps<T> {
             </div>
           </div>
         </div>
+        {isSaved && (
+            <PopupNotification
+            message={`${modalTitle} berhasil`}
+            color={"green"}
+            isClicked={isSaved}
+            onClicked={(onClicked) => setIsSaved(onClicked)}
+          />
+        )}
+        {isFailed && (
+            <PopupNotification
+            message={`${modalTitle} berhasil`}
+            color={"red"}
+            isClicked={isFailed}
+            onClicked={(onClicked) => setIsFailed(onClicked)}
+          />
+        )}
       </div>
     );
   }
