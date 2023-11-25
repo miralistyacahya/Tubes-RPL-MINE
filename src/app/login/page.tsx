@@ -6,6 +6,7 @@ import icon from '../../../public/icons/online 1.svg'
 import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
+// import { useEffect, useState } from 'react'
 
 const isAdmin = false //role === "admin"
 const isKasir = false
@@ -34,7 +35,39 @@ export default function Login({
       return redirect('/login?message=Gagal Mengautentikasi Pengguna')
     }
 
-    return redirect('/account')
+    // const [jwt, setJwt] = useState(null)
+
+    // useEffect(()=>{
+    //   const {user, session} = supabase.auth.getSession()
+    //   if (user &&session){
+    //     setJwt(session.access_token)
+    //   }
+    // }, [])
+
+    const user = supabase.auth.getUser()
+    console.log(user)
+    // const { data: accountData, error: accountError } = await supabase
+    //   .from('account')
+    //   .select('email')
+    //   .eq('email', supabase.auth.) 
+    //   .single();
+
+    // if (accountError) {
+    //   // Handle error fetching role information
+    //   console.error('Error fetching role information:', accountError);
+    //   return redirect('/');
+    // }
+
+    // Check the user's role
+    const role = "admin" //accountData?.role as string;
+
+    if (role === 'admin') {
+      return redirect('/register');
+    } else if (role === 'kasir') {
+      return redirect('/cart');
+    } else if (role === 'inventaris') {
+      return redirect('/account');
+    }
   }
 
   return (
