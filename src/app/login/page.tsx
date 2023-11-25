@@ -7,43 +7,47 @@ import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 
+const isAdmin = false //role === "admin"
+const isKasir = false
+const isInventaris = false
+
 
 export default function Login({
   searchParams,
 }: {
   searchParams: { message: string }
 }) {
-  const signIn = async (formData: FormData) => {
+  const signIn = async (account: FormData) => {
     'use server'
 
-    const username = formData.get('username') as string
-    const password = formData.get('password') as string
+    const email = account.get('email') as string
+    const password = account.get('password') as string
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
     const { error } = await supabase.auth.signInWithPassword({
-      username,
+      email,
       password,
     })
 
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      return redirect('/login?message=Gagal Mengautentikasi Pengguna')
     }
 
-    return redirect('/')
+    return redirect('/account')
   }
 
-  const signUp = async (formData: FormData) => {
+  const signUp = async (account: FormData) => {
     'use server'
 
     const origin = headers().get('origin')
-    const username = formData.get('username') as string
-    const password = formData.get('password') as string
+    const email = account.get('email') as string
+    const password = account.get('password') as string
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
     const { error } = await supabase.auth.signUp({
-      username,
+      email,
       password,
       options: {
         emailRedirectTo: `${origin}/auth/callback`,
@@ -56,10 +60,6 @@ export default function Login({
 
     return redirect('/login?message=Check email to continue sign in process')
   }
-
-  const isAdmin = false //role === "admin"
-  const isKasir = false
-  const isInventaris = false
 
   return (
     <div>
@@ -81,17 +81,17 @@ export default function Login({
             className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
             action={signIn}
           >
-            <label className="medium-16 heading" htmlFor="username">
-              Username
+            <label className="medium-16 heading">
+              Email
             </label>
             <input
               className="rounded-md px-4 py-2 bg-inherit border mb-3"
               type="text"
-              name="username"
-              placeholder="Masukkan username anda"
+              name="email"
+              placeholder="Masukkan email anda"
               required
             />
-            <label className="medium-16 heading" htmlFor="password">
+            <label className="medium-16 heading">
               Password
             </label>
             <input
@@ -121,7 +121,5 @@ export default function Login({
         </div>
       </div>
     </div>  
-
   )
 }
-
