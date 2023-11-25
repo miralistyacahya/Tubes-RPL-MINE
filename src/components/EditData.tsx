@@ -123,12 +123,11 @@ interface EditDataProps<T> {
                           onChange={(e) => setEditedData({ ...editedData, [field.key]: e.target.value })}
                           pattern={(field.key === 'price' || field.key === 'stock') ? '\\d+' : undefined} // Set pattern only for 'price' and 'stock'
                           placeholder={field.label}
-                          className={!field.readOnly ? "input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500 ... peer" : "input w-full input-bordered bg-gray-100 font-regular text-zinc-500 "}
-  
+                          className={!field.readOnly ? "input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500 ... peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" : "input w-full input-bordered bg-gray-100 font-regular text-zinc-500 "}
                         />
                         {(field.key === 'price' || field.key === 'stock') && (
                           <span className="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
-                            Please enter a valid number
+                            Harap masukkan angka yang valid
                           </span>
                         )}
                       </div>
