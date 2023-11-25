@@ -206,7 +206,7 @@ const CartPage: React.FC<CartProps> = ({
               <div>{`Rp${cartTotal.toLocaleString("id-ID")},00`}</div>
             </div>
 
-            <div className="justify-center grid grid-cols-2">
+            <div className="justify-center grid grid-cols-2 gap-4">
               <div>
                 <Button
                   type="button"

@@ -258,15 +258,9 @@ export default function Cart() {
                     </div>
                 </div>
                 <div className="rightContent">
-                    {dataItem.length === 0 ? (
-                        <div className="pb-12" style={{ marginRight: '64px' }}>
-                            <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } isInitialCart = { isInitialCart } isFailed = { isFailed } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
-                        </div>
-                    ) : (
-                        <div style={{ marginRight: '64px'}}>
-                            <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } isInitialCart = { isInitialCart } isFailed = { isFailed } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
-                        </div>
-                    )}
+                    <div className="pb-12" style={{ marginRight: '64px'}}>
+                        <CartPage user = { user } currentDate = { currentDate } cart = { cart } cartTotal = { cartTotal } isInitialCart = { isInitialCart } isFailed = { isFailed } handleButtonPlusClick = { handleButtonPlusClick } handleButtonMinClick = { handleButtonMinClick } handleButtonDelClick={ handleButtonDelClick } handleButtonFailedClick={ handleButtonFailedClick }/>
+                    </div>
                 </div>
             </div>
         </div>
