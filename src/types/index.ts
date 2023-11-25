@@ -1,7 +1,13 @@
 export interface account {
     username: string;
+    email: string;
     password: string;
     role: string;
+}
+
+export interface LoginUserParams {
+    email: string;
+    password: string;
 }
 
 export interface product {

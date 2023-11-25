@@ -37,30 +37,6 @@ export default function Login({
     return redirect('/account')
   }
 
-  const signUp = async (account: FormData) => {
-    'use server'
-
-    const origin = headers().get('origin')
-    const email = account.get('email') as string
-    const password = account.get('password') as string
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${origin}/auth/callback`,
-      },
-    })
-
-    if (error) {
-      return redirect('/login?message=Could not authenticate user')
-    }
-
-    return redirect('register')
-  }
-
   return (
     <div>
       <Navbar 
