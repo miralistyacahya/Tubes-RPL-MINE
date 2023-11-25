@@ -5,6 +5,7 @@ import Image from "next/image";
 import tutup from "../../public/icons/tutup.svg"
 import simpan from "../../public/icons/simpan.svg"
 import Button from "./Button";
+import PopupNotification from "./PopupNotification";
 
 interface TambahDataDropdownProps {
   tableName: string;
@@ -27,6 +28,8 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
     const router = useRouter();
     const supabase = createClient();
     const [isValid, setIsValid] = useState(true);
+    const [isSaved, setIsSaved] = useState(false);
+    const [isFailed, setIsFailed] = useState(false);
 
     const handleChange = () => {
       setModal(!modal);
@@ -54,6 +57,10 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
           if (validationData && validationData.length > 0) {
             // Data exists in the database, perform your validation logic here
             console.error('Validation failed. Data already exists in the database.');
+            setIsFailed(true);
+            setTimeout(() => {
+                setIsFailed(false);
+            }, 3000);
             return;
           }
         }
@@ -68,13 +75,19 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
         }
   
         console.log(`${label} berhasil ditambahkan:`, responseData);
-  
-        // Setelah berhasil menambahkan data, reset form, close the modal, and do not refresh the page
         setData({});
+        setIsSaved(true);
+        setTimeout(() => {
+            setIsSaved(false);
+        }, 15000);
         setModal(false);
         window.location.reload()
       } catch (error) {
         console.error(`Terjadi kesalahan saat menambah ${label}:`, error);
+        setIsFailed(true);
+        setTimeout(() => {
+            setIsFailed(false);
+        }, 3000);
       } finally {
         setIsMutating(false);
       }
@@ -109,7 +122,7 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
           variant="btn_blue"
           size="semibold-14"
           onButtonClick={handleChange}
-      />
+        />
         <input type="checkbox" checked={modal} onChange={handleChange} className="modal-toggle" />
         <div className={`modal ${modal ? 'open' : ''}`}>
           <div className="modal-box bg-white">
@@ -180,7 +193,23 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
               </form>
             </div>
           </div>
+          {isFailed && (
+            <PopupNotification
+              message={`${tableName} gagal ditambah`}
+              color={"red"}
+              isClicked={isFailed}
+              onClicked={(onClicked) => setIsFailed(onClicked)}
+            />
+          )} 
         </div>
+        {isSaved && (
+            <PopupNotification
+              message={`${tableName} berhasil ditambah`}
+              color={"green"}
+              isClicked={isSaved}
+              onClicked={(onClicked) => setIsSaved(onClicked)}
+            />
+          )}
       </div>
     );
   }

@@ -2,13 +2,9 @@ import { SyntheticEvent, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Updated import
 import { createClient } from '@/src/utils/supabase/client';
 import tutup from '../../public/icons/tutup.svg';
-import simpan from '../../public/icons/simpan.svg';
-import edit from '../../public/icons/edit button.svg';
 import hapus from '../../public/icons/delete button.svg';
-import hapusmerah from '../../public/icons/hapusmerah.svg';
-import batal from '../../public/icons/batal.svg';
 import Image from 'next/image';
-import Button from './Button';
+import PopupNotification from './PopupNotification';
 
 interface HapusDataProps<T> {
     data: T;
@@ -20,18 +16,14 @@ interface HapusDataProps<T> {
   function HapusData<T>({ data, onDelete, renderInfo, modalTitle }: HapusDataProps<T>) {
     const [modal, setModal] = useState(false);
     const [isMutating, setIsMutating] = useState(false);
-  
+    const [isSaved, setIsSaved] = useState(false);
+    const [isFailed, setIsFailed] = useState(false)
+
     async function handleDelete(e: SyntheticEvent) {
       e.preventDefault();
       setIsMutating(true);
   
       try {
-        // Perform delete operation based on your data structure
-        // For example, you can use Supabase or any other service
-        // Replace the following line with your actual delete logic
-        // const { error } = await supabase.from('your_table').delete().eq('id', data.id);
-  
-        // Simulating a successful deletion
         const error = null;
   
         if (error) {
@@ -39,10 +31,18 @@ interface HapusDataProps<T> {
         }
   
         console.log('Data berhasil dihapus');
-        onDelete(data); // Notify parent component about the deletion
+        onDelete(data);
         setModal(false);
+        setIsSaved(true);
+        setTimeout(() => {
+            setIsSaved(false);
+        }, 20000);
       } catch (error) {
         console.error('Terjadi kesalahan:', error);
+        setIsFailed(true);
+        setTimeout(() => {
+            setIsFailed(false);
+        }, 3000);
       } finally {
         setIsMutating(false);
       }
@@ -80,12 +80,10 @@ interface HapusDataProps<T> {
                 </div>
                 <div className="grid grid-cols-2 modal-action justify-center items-center px-8 gap-4 mb-4">
                   <button type="button" className="close-button rounded-lg border btn_cancel justify-center items-center py-4" onClick={handleChange}>
-                    {/* <Image src={batal} alt="batal" /> */}
                     <label className={`semibold-16 whitespace-nowrap cursor-pointer`}>Batal</label>
                   </button>
                   {!isMutating ? (
                     <button type="button" className="btn-danger rounded-lg border btn_red justify-center items-center py-4" onClick={handleDelete}>
-                      {/* <Image src={hapusmerah} alt="hapus" /> */}
                       <label className={`semibold-16 whitespace-nowrap cursor-pointer`}>Hapus</label>
                     </button>
                   ) : (
@@ -98,6 +96,22 @@ interface HapusDataProps<T> {
             </div>
           </div>
         )}
+        {isSaved && (
+              <PopupNotification
+                message={`${modalTitle} berhasil`}
+                color={"green"}
+                isClicked={isSaved}
+                onClicked={(onClicked) => setIsSaved(onClicked)}
+              />
+            )}
+            {isFailed && (
+                <PopupNotification
+                message={`${modalTitle} gagal`}
+                color={"red"}
+                isClicked={isFailed}
+                onClicked={(onClicked) => setIsFailed(onClicked)}
+              />
+            )}
       </div>
     );
   }
