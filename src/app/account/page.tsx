@@ -127,6 +127,7 @@ export default function app() {
                 ]}
                 onSave={handleSave}
                 onDataChange={handleRoleChange}
+                modalTitle='Edit Akses'
                 // renderTrigger={({ openModal }) => (
                 //     <button className="btn-neutral btn-info btn-sm" onClick={openModal}>
                 //     <Image src={edit} alt="edit" />
