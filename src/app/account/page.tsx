@@ -1,21 +1,16 @@
 "use client"
 
-import SearchBar from '@/src/components/SearchBar'
 import Table, { TableColumn } from '../../components/Table'
 import Pagination from '@/src/components/Pagination'
-import { cookies } from 'next/headers';
-import ActionButton from '@/src/components/ActionButton';
 import { useEffect, useState } from 'react';
 import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
 import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
-import TambahAkses from './tambahAkses';
-import TambahData from '@/src/components/TambahData';
 import TambahDataDropdown from '@/src/components/TambahDataDropdown';
 import IconAddTop from "../../../public/icons/add-button-top-table.svg";
-import EditAkses from './editAkses';
-import HapusAkses from './hapusAkses';
+import EditData from '@/src/components/EditData';
+import HapusData from '@/src/components/HapusData';
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -69,10 +64,10 @@ export default function app() {
         fetchData();
     }, [pageVisited, pageVisitedTo, totalCount]);
     
-    const handleRoleChange = (username: string, newRole: string) => {
+    const handleRoleChange = (editedAccount: account) => {
         // Find the account in dataItem and update its role
         const updatedDataItem = dataItem.map((account) =>
-            account.username === username ? { ...account, role: newRole } : account
+            account.username === editedAccount.username ? { ...account, role: editedAccount.role } : account
         );
         setDataItem(updatedDataItem);
     };
@@ -91,6 +86,30 @@ export default function app() {
         }
       };
 
+      const handleSave = async (editedAccount: account, handleRoleChange : any) => {
+        try {
+            const supabase = createClient();
+            const { data, error } = await supabase
+            .from('account')
+            .update({
+                role: editedAccount.role
+              })
+            .eq('username', editedAccount.username);
+    
+          if (error) {
+            console.log(error)
+            throw error;
+            
+          }
+    
+          console.log('Data berhasil diubah:', data);
+    
+          handleRoleChange(editedAccount);
+        } catch (error) {
+          console.error('Terjadi kesalahan:', error);
+        }
+    }
+
 
     const displayData = dataItem.map((account) => ({
       username: account.username || 'N/A',
@@ -98,8 +117,37 @@ export default function app() {
       role: account.role || 'N/A',
       aksi: (
         <div className="flex justify-center">
-            <EditAkses account={account} onRoleChange={handleRoleChange} />
-            <HapusAkses username={account.username} onDelete={(deletedUsername) => handleDelete(deletedUsername)} />
+            <EditData
+                data={account}
+                fields={[
+                    { label: 'Username', key: 'username', readOnly: true, valNum: false },
+                    { label: 'Password', key: 'password', readOnly: true, valNum: false },
+                    { label: 'Role', key: 'role', readOnly: false, options: ['admin', 'inventaris', 'kasir'], valNum: false },
+
+                ]}
+                onSave={handleSave}
+                onDataChange={handleRoleChange}
+                // renderTrigger={({ openModal }) => (
+                //     <button className="btn-neutral btn-info btn-sm" onClick={openModal}>
+                //     <Image src={edit} alt="edit" />
+                //     </button>
+                // )}
+                // modalTitle="Ubah Akses"
+                // closeIcon={<Image src={tutup} alt="edit" />}
+                // saveButtonIcon={<Image src={simpan} alt="edit" />}
+            />
+
+            <HapusData
+                data={account.username}
+                onDelete={(deletedProduct) => handleDelete(deletedProduct)}
+                renderInfo={(productname) => (
+                    <p style={{ fontSize: '24px', color: '#000000', wordWrap: 'break-word' }}>
+                    Apakah Anda yakin ingin menghapus data akses {productname}?
+                    </p>
+                )}
+                modalTitle="Hapus Akses" // Ganti dengan judul yang sesuai
+            />
+
         </div>
     ),
 }));
@@ -145,7 +193,6 @@ export default function app() {
                     </div>    
                 </div>
             </div>
-        
         </div>
         
     )
