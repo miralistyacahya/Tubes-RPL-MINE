@@ -58,7 +58,7 @@ const Dropdown: React.FC<DropdownProps> = ({ isOpenProp, selectedOptionProp, onT
                  <div className="flex items-center">{selectedOptionProp || 'Semua Kategori'}</div>
             </button>
             {isOpenProp && (
-                <div className='absolute top-6 right-0 z-10 mt-5 min-w-[180px] origin-top-right rounded-md border border-gray-100 bg-white shadow-lg'>
+                <div className='absolute top-6 right-0 z-10 mt-5 min-w-[180px] origin-top-right rounded-md border border-gray-100 bg-white shadow-lg max-h-80 overflow-auto'>
                     {options.map((option) => (
                         <button type='button' 
                         onClick={onOptionClicked(option.id, option.name)} 
