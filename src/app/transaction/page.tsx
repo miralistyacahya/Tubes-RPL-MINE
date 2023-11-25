@@ -4,7 +4,7 @@ import Navbar from "@/src/components/Navbar";
 import Pagination from "@/src/components/Pagination";
 import Table, { TableColumn } from "@/src/components/Table"
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from "@/src/constants";
-import { transaction, orders } from "@/src/types";
+import { transaction } from "@/src/types";
 import { createClient } from "@/src/utils/supabase/client";
 import { useEffect, useState } from "react";
 import { PostgrestError } from '@supabase/supabase-js';
@@ -71,6 +71,16 @@ export default function app() {
     // handle information
     const [transactionDetails, setTransactionDetails] = useState<any[][]>([]);
     const [isTransactionInfoVisible, setTransactionInfoVisible] = useState(false);
+    const [isBlurActive, setBlurActive] = useState(false);
+
+    // blur effect
+    const openPopup = () => {
+        setBlurActive(true); 
+    };
+    
+    const closePopup = () => {
+        setBlurActive(false); 
+    };
 
     const handleButtonInfoClick = async (idtransaction: number, totalcost: number) => {
         try {
@@ -95,6 +105,7 @@ export default function app() {
             setTransactionDetails(productData);
             setTransactionInfoVisible(true);
             setTotalCost(totalcost);
+            openPopup();
 
             }
           } catch (error: any) {
@@ -128,52 +139,35 @@ export default function app() {
 
     return (
         <div>
-            <Navbar 
-            listOfNav={
-                (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
-            }
-            />
-            <div className='mx-16'>
-                <h1 className="heading bold-28 mt-8">Daftar Riwayat Transaksi</h1>
-                <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
-                    {/* <div className="grid grid-cols-2"> */}
-                        {/* <div className="justify-end flex flex-row pr-10 my-5 gap-4">
-                            <Dropdown
-                                isOpenProp={isOpen}
-                                selectedOptionProp={selectedOption ? selectedOption.name : null}
-                                onToggle={toggling}
-                                onOptionClicked={onOptionClicked}
-                              /> 
-                            <Button
-                                type="button"
-                                title="Tambah Kategori"
-                                icon={IconAddTop}
-                                round="rounded-lg"
-                                variant="btn_blue"
-                                size="semibold-14"
-                            />
-
-                        </div> */}
-                    {/* </div> */}
-                    <div className="pt-12">
-                        <Table columns={columns} data={displayData}/>
-                        <div className='grid grid-cols-3 items-center'>
-                            <div className='hidden lg:flex'>
-                                <p className="text-sm text-gray-700 pl-8"> 
-                                    {(!columns || !displayData || displayData.length === 0) ? 
-                                    `Showing 0 to 0 of 0 results`
-                                    : `Showing ${pageVisited + 1} to ${pageVisitedTo > totalCount ? totalCount : pageVisitedTo} of ${totalCount} results`
-                                    }
-                                </p>
-                            </div>
-                            <div className='col-start-2 flex justify-center'>
-                                <Pagination
-                                setPageNumber={setPageNumber}
-                                currentPage={pageNumber}
-                                pageCount={pageCount}
-                                />
-                            </div>
-                        </div>    
+            <div  className={isBlurActive ? 'blurred-page' : ''}>
+                <Navbar 
+                listOfNav={
+                    (isAdmin ? NAV_ADMIN : (isKasir ? NAV_KASIR : (isInventaris ? NAV_INVENTARIS : NAV_PUBLIC)))
+                }
+                />
+                <div className='mx-16'>
+                    <h1 className="heading bold-28 mt-8">Daftar Riwayat Transaksi</h1>
+                    <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
+                        <div className="pt-12">
+                            <Table columns={columns} data={displayData}/>
+                            <div className='grid grid-cols-3 items-center'>
+                                <div className='hidden lg:flex'>
+                                    <p className="text-sm text-gray-700 pl-8"> 
+                                        {(!columns || !displayData || displayData.length === 0) ? 
+                                        `Showing 0 to 0 of 0 results`
+                                        : `Showing ${pageVisited + 1} to ${pageVisitedTo > totalCount ? totalCount : pageVisitedTo} of ${totalCount} results`
+                                        }
+                                    </p>
+                                </div>
+                                <div className='col-start-2 flex justify-center'>
+                                    <Pagination
+                                    setPageNumber={setPageNumber}
+                                    currentPage={pageNumber}
+                                    pageCount={pageCount}
+                                    />
+                                </div>
+                            </div>    
+                        </div>
                     </div>
                 </div>
             </div>
@@ -182,7 +176,10 @@ export default function app() {
                 <TransactionInfo
                     transactionDetails={transactionDetails}
                     transactionCost = {totalCost}
-                    onClose={() => setTransactionInfoVisible(false)}
+                    onClose={() => {
+                        setTransactionInfoVisible(false);
+                        closePopup();
+                    }}
                 />
             )}
         </div>
