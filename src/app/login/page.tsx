@@ -58,7 +58,7 @@ export default function Login({
       return redirect('/login?message=Could not authenticate user')
     }
 
-    return redirect('/login?message=Check email to continue sign in process')
+    return redirect('register')
   }
 
   return (
@@ -81,17 +81,16 @@ export default function Login({
             className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
             action={signIn}
           >
-            <label className="medium-16 heading">
+            <label className="medium-16 heading" htmlFor="email">
               Email
             </label>
             <input
               className="rounded-md px-4 py-2 bg-inherit border mb-3"
-              type="text"
               name="email"
               placeholder="Masukkan email anda"
               required
             />
-            <label className="medium-16 heading">
+            <label className="medium-16 heading"  htmlFor="password">
               Password
             </label>
             <input
@@ -101,7 +100,7 @@ export default function Login({
               placeholder="••••••••"
               required
             />
-            <button className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
+            <button formAction={signIn} className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
               Masuk
             </button>
 
