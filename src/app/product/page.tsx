@@ -1,6 +1,5 @@
 "use client"
 
-import ActionButton from "@/src/components/ActionButton";
 import Button from "@/src/components/Button";
 import Navbar from "@/src/components/Navbar";
 import Pagination from "@/src/components/Pagination";
@@ -137,17 +136,15 @@ export default function app() {
           const supabase = createClient();
           await supabase.from('product').delete().eq('productname', productname);
     
-          // Set state to reflect the updated data without the deleted user
           setDataItem((prevData) => prevData.filter((product) => product.productname !== productname));
     
-          setTotalCount((prevCount) => prevCount - 1); // Update total count after deletion
+          setTotalCount((prevCount) => prevCount - 1);
         } catch (error: any) {
           console.error('Error deleting data:', error.message);
         }
       };
 
       const handleProductChange = (editedProduct: product) => {
-        // Find the account in dataItem and update its role
         const updatedDataItem = dataItem.map((product) =>
             product.idproduct === editedProduct.idproduct ? { ...product, price: editedProduct.price, stock:editedProduct.stock } : product
         );
@@ -187,7 +184,6 @@ export default function app() {
       stock: product.stock.toString() || 'N/A',
       aksi: (
         <div className="flex justify-center">
-            {/* <EditAkses account={account} onRoleChange={handleRoleChange} /> */}
             <EditData
                 data={product}
                 fields={[
@@ -199,14 +195,7 @@ export default function app() {
                 ]}
                 onSave={handleSave}
                 onDataChange={handleProductChange}
-                // renderTrigger={({ openModal }) => (
-                //     <button className="btn-neutral btn-info btn-sm" onClick={openModal}>
-                //     <Image src={edit} alt="edit" />
-                //     </button>
-                // )}
-                // modalTitle="Ubah Akses"
-                // closeIcon={<Image src={tutup} alt="edit" />}
-                // saveButtonIcon={<Image src={simpan} alt="edit" />}
+                modalTitle="Edit Produk"
             />
             <HapusData
                 data={product.productname}
@@ -216,7 +205,7 @@ export default function app() {
                     Apakah Anda yakin ingin menghapus data product {productname}?
                     </p>
                 )}
-                modalTitle="Hapus Akses" // Ganti dengan judul yang sesuai
+                modalTitle="Hapus Produk" // Ganti dengan judul yang sesuai
             />
         </div>
       )
