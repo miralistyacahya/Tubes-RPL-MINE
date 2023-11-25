@@ -149,11 +149,11 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
                           onChange={(e) => setData({ ...data, [column]: e.target.value })}
                           pattern={(column === 'price' || column === 'stock') ? '\\d+' : undefined} // Set pattern only for 'price' and 'stock'
                           placeholder={formTitle[index].toLowerCase() + "..."}
-                          className="input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500 ... peer"
+                          className="input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500 ... peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
                         />
                         {(column === 'price' || column === 'stock') && (
                           <span className="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
-                            Please enter a valid number
+                            Harap masukkan angka yang valid
                           </span>
                         )}
                       </div>
