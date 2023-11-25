@@ -11,6 +11,7 @@ import TambahDataDropdown from '@/src/components/TambahDataDropdown';
 import IconAddTop from "../../../public/icons/add-button-top-table.svg";
 import EditData from '@/src/components/EditData';
 import HapusData from '@/src/components/HapusData';
+import TambahAkses from './TambahAkses';
 
 const columns: TableColumn[] = [
     { label: 'username', dataKey: 'username', width: '1/4', align: 'left' },
@@ -127,14 +128,7 @@ export default function app() {
                 ]}
                 onSave={handleSave}
                 onDataChange={handleRoleChange}
-                // renderTrigger={({ openModal }) => (
-                //     <button className="btn-neutral btn-info btn-sm" onClick={openModal}>
-                //     <Image src={edit} alt="edit" />
-                //     </button>
-                // )}
-                // modalTitle="Ubah Akses"
-                // closeIcon={<Image src={tutup} alt="edit" />}
-                // saveButtonIcon={<Image src={simpan} alt="edit" />}
+                modalTitle="Ubah Akses"
             />
 
             <HapusData
@@ -154,7 +148,7 @@ export default function app() {
 
 
 
-    const isAdmin = false //role === "admin"
+    const isAdmin = true //role === "admin"
     const isKasir = false
     const isInventaris = false
 
@@ -170,7 +164,7 @@ export default function app() {
                 <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
                     <div className="grid grid-cols-2">
                         <div className="justify-end flex flex-row pr-10 my-5 gap-4 col-start-2">
-                            <TambahDataDropdown tableName="account" columns={["username", "password", "role"]} formTitle= {["Username", "Password", "Role"]} label="Akses" icon={IconAddTop} colToBeValidate="username" dropdownCol="role" dropdownVal={["admin", "kasir", "inventaris"]}/>
+                            <TambahAkses/>
                         </div>
                     </div>
                     <Table columns={columns} data={displayData} emptyMessage='Tidak ada akun'/>
