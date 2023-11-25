@@ -1,18 +1,15 @@
 "use client"
 
-import ActionButton from "@/src/components/ActionButton";
-import Button from "@/src/components/Button";
 import Navbar from "@/src/components/Navbar";
 import Pagination from "@/src/components/Pagination";
 import Table, { TableColumn } from "@/src/components/Table"
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from "@/src/constants";
-import { transaction } from "@/src/types";
+import { transaction, orders } from "@/src/types";
 import { createClient } from "@/src/utils/supabase/client";
 import { useEffect, useState } from "react";
-import IconAddTop from "../../../public/icons/add-button-top-table.svg"
-import Dropdown from "@/src/components/Dropdown";
 import { PostgrestError } from '@supabase/supabase-js';
-import { IoInformationCircleOutline } from "react-icons/io5";
+import InfoButton from "@/src/components/transaction/InfoButton";
+import TransactionInfo from "@/src/components/transaction/TransactionInfo";
 
 export type DbResult<T> = T extends PromiseLike<infer U> ? U : never
 export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never
@@ -34,6 +31,7 @@ export default function app() {
     const dataPerPage = 10;
     const pageVisited = pageNumber * dataPerPage;
     const pageVisitedTo = pageVisited + dataPerPage;
+    const [totalCost, setTotalCost] = useState<number>(0);
 
     useEffect (() => {
         const fetchData = async () => {
@@ -70,6 +68,39 @@ export default function app() {
 
     }, [pageVisited, pageVisitedTo, totalCount]);
 
+    // handle information
+    const [transactionDetails, setTransactionDetails] = useState<any[][]>([]);
+    const [isTransactionInfoVisible, setTransactionInfoVisible] = useState(false);
+
+    const handleButtonInfoClick = async (idtransaction: number, totalcost: number) => {
+        try {
+            const supabase = createClient();
+            const { data, error } = await supabase
+              .from("orders")
+              .select("idproduct, quantity, price")
+              .eq("idtransaction", idtransaction);
+      
+            if (error) {
+              throw error;
+            }
+      
+            if (data) {
+                const productData = data.map((product) => [
+                    idtransaction,
+                    product.idproduct,
+                    product.quantity,
+                    product.price,
+                ]);
+          
+            setTransactionDetails(productData);
+            setTransactionInfoVisible(true);
+            setTotalCost(totalcost);
+
+            }
+          } catch (error: any) {
+            console.error("Error fetching data:", error.message);
+          }
+    }
 
     const displayData = dataItem.map((transaction) => {
         const transdate = transaction.transactiondate.toString().split('T');
@@ -79,15 +110,15 @@ export default function app() {
         const formattedDate = `${date} ${time}`;
       
         return {
-          idtransaction: transaction.idtransaction || 'N/A',
-          transactiondate: formattedDate || 'N/A',
-          username: transaction.username || 'N/A',
-          totalcost: `Rp${transaction.totalcost.toLocaleString('id-ID')},00` || 'N/A',
-          aksi:     
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <IoInformationCircleOutline color="heading" size={20}/>
-        </div>
-    
+            idtransaction: transaction.idtransaction || 'N/A',
+            transactiondate: formattedDate || 'N/A',
+            username: transaction.username || 'N/A',
+            totalcost: `Rp${transaction.totalcost.toLocaleString('id-ID')},00` || 'N/A',
+            aksi:     
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <InfoButton onButtonClick={() => handleButtonInfoClick(transaction.idtransaction, transaction.totalcost)}/>
+            </div>
+        
         };
       });
       
@@ -146,6 +177,15 @@ export default function app() {
                     </div>
                 </div>
             </div>
+
+            {isTransactionInfoVisible && (
+                <TransactionInfo
+                    transactionDetails={transactionDetails}
+                    transactionCost = {totalCost}
+                    onClose={() => setTransactionInfoVisible(false)}
+                />
+            )}
         </div>
+
     )
 }
