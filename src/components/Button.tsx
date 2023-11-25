@@ -8,14 +8,15 @@ type ButtonProps = {
     variant: string;
     size: string;
     full?: boolean
-    
+    onButtonClick?: () => void;
+    addDetail? : string;
 }
 
-const Button = ({type, title, icon, round, variant, size, full} : ButtonProps) => {
+const Button = ({type, title, icon, round, variant, size, full, onButtonClick, addDetail} : ButtonProps) => {
   return (
     <button
-    className={`flexCenter gap-2 ${round} border ${variant} ${full && 'w-full'}`}
-    type = {type}
+    className={`flexCenter gap-2 ${round} border ${variant} ${full && 'w-full'} ${addDetail}`}
+    type = {type} onClick = { onButtonClick }
     >
         {icon && <Image src={icon} alt={title} width={20} height={20} />}
         <label className={`${size} whitespace-nowrap cursor-pointer`}>{title}</label>

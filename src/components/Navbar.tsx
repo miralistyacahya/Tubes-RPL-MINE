@@ -19,7 +19,7 @@ const Navbar = ({
       <Link href="/">
         <Image src={PlaceholderImage} alt="logo" width={88}/>
       </Link>
-      {listOfNav.length > 1 ? 
+      {listOfNav.length >= 1 ? 
         <div className='flex flex-row gap-12 items-center'>
           <ul className='hidden h-full gap-12 md:flex'>
             {/* ini nanti diatur rolenya dulu, cek role -> terus di mapping panggil NAV yang siapa */}

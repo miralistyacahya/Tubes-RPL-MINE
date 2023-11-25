@@ -21,6 +21,7 @@ const Pagination = ({setPageNumber, currentPage, pageCount}:{setPageNumber: Reac
         onPageChange={changePage}
         pageRangeDisplayed={1}
         marginPagesDisplayed={1}
+        forcePage={currentPage}
         pageCount={pageCount}
         previousLabel={
           <span className="w-10 h-10 flex items-center justify-center bg-lightGray rounded-md mr-4">
@@ -29,7 +30,7 @@ const Pagination = ({setPageNumber, currentPage, pageCount}:{setPageNumber: Reac
           
         }
 
-        containerClassName="flex items-center py-4 mx-auto"
+        containerClassName="flex items-center py-4 mx-auto text-black"
         pageClassName="block regular-14 hover:bg-gray-100 w-8 h-8 flex items-center justify-center rounded-md mr-4 cursor-pointer"
         activeClassName="bg-blue-600 text-white hover:bg-sky-800"
       />
