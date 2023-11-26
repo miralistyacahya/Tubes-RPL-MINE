@@ -35,6 +35,28 @@ export default function Login({
     if (error) {
       return redirect('/login?message=Gagal Mengautentikasi Pengguna')
     }
+    
+    const {data: {user},} = await supabase.auth.getUser()
+    console.log("ini user", user)
+
+    let role;
+    const {data: roles} = await supabase.from('account').select('role').eq('email', user?.email);
+    
+    if(roles && roles.length> 0) {
+      role = roles[0].role;
+      console.log("ini role", role);
+
+
+      if (role === "admin") {
+        console.log("Redirecting to /account");
+        return redirect('/account');
+      } else if (role === "kasir") {
+        return redirect('/cart');
+      } else if (role === "inventaris") {
+        console.log("Redirecting to /product");
+        return redirect('/product');
+      }
+    }
 
     // const [jwt, setJwt] = useState(null)
 
@@ -44,39 +66,7 @@ export default function Login({
     //     setJwt(session.access_token)
     //   }
     // }, [])
-    try {
-      const {data: {user},} = await supabase.auth.getUser()
-      console.log("ini user", user)
-
-      let role;
-      const {data: roles} = await supabase.from('account').select('role').eq('email', user?.email);
-      
-      if(roles && roles.length> 0) {
-        role = roles[0].role;
-        console.log("ini role", role);
-
-        // const router = useRouter();
-
-        if (role === "admin") {
-          console.log("Redirecting to /account");
-          // Use Next.js router to perform client-side redirect
-          return redirect('/account');
-          // return NextResponse.next(); // Return a response (optional)
-        } else if (role === "kasir") {
-          // Use Next.js router to perform client-side redirect
-          return redirect('/cart');
-          // return NextResponse.next(); // Return a response (optional)
-        } else if (role === "inventaris") {
-          console.log("Redirecting to /product");
-          // Use Next.js router to perform client-side redirect
-          return redirect('/product');
-          // return NextResponse.next(); // Return a response (optional)
-        }
-      }
-
-    } catch(error){
-      console.log(error)
-    }
+    
     // const { data: accountData, error: accountError } = await supabase
     //   .from('account')
     //   .select('email')

@@ -6,6 +6,7 @@ export async function middleware(request: NextRequest) {
     // Feel free to remove once you have Supabase connected.
 
     const { supabase, response } = createClient(request)
+    console.log("requess", request)
     console.log("tes", response)
     // Refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
@@ -29,22 +30,25 @@ export async function middleware(request: NextRequest) {
         role = roles[0].role;
         console.log("hloo role", role);
       }
-
-      else if(request.nextUrl.pathname.startsWith(accAdminPath) && role!=="admin") {
+      
+      if(request.nextUrl.pathname.startsWith(accAdminPath) && role!=="admin") {
         return new NextResponse (
           JSON.stringify({ message: "authorization failed" }),
         { status: 403, headers: { "Content-Type": "application/json" } }
         )
+        // throw new Error('Hanya admin yang boleh mengakses')
       } else if((request.nextUrl.pathname.startsWith(cartKasirPath)||request.nextUrl.pathname.startsWith(riwayatKasirPath)) && role!=="kasir") {
         return new NextResponse (
           JSON.stringify({ message: "authorization failed" }),
         { status: 403, headers: { "Content-Type": "application/json" } }
         )
+        // throw new Error('Hanya pegawai kasir yang boleh mengakses')
       } else if(request.nextUrl.pathname.startsWith(produkInventarisPath) && role !=="inventaris"){
         return new NextResponse (
           JSON.stringify({ message: "authorization failed" }),
         { status: 403, headers: { "Content-Type": "application/json" } }
         )
+        // throw new Error('Hanya pegawai inventaris yang boleh mengakses')
       } 
     }
     else{
@@ -67,9 +71,9 @@ export async function middleware(request: NextRequest) {
   }
 }
 
-// export const config = {
-//   matcher: ["/account/:path*", "/product/:path*", "/account/:cart*", "/account/:transaction*"],
-// };
+export const config = {
+  matcher: ["/account/:path*", "/product/:path*", "/cart/:path*", "/transaction/:path*"],
+};
 
 // export async function middleware(req: NextRequest) {
 //   const res = NextResponse.next()
