@@ -116,6 +116,7 @@ function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidat
                     onChange={(e) => setData({ ...data, [column]: e.target.value })}
                     className="input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500"
                     placeholder={formTitle[index].toLowerCase() + "..."}
+                    required
                   />
                 </div>
               ))}
