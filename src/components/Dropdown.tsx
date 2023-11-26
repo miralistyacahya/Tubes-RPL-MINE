@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import IconFilter from "../../public/icons/filter-button-top-table.svg"
+import { IoFilter } from "react-icons/io5";
 import Image from 'next/image'
 import { createClient } from '../utils/supabase/client';
 
@@ -50,7 +51,8 @@ const Dropdown: React.FC<DropdownProps> = ({ isOpenProp, selectedOptionProp, onT
         <div className='relative inline-flex rounded-lg bg-blue-500 text-white hover:bg-blue-600 items-center px-4 gap-2 border w-48'>
             <div className='h-full'>
                 <button type='button' onClick={onToggle} className={`button-${isOpenProp? 'danger' : 'success'} items-center text-white hover:bg-blue-600 inline-flex h-full rounded-r-md`}>
-                    <Image src={IconFilter} alt="menu" className='inline-block cursor-pointer h-full'/>
+                    <IoFilter className='inline-block cursor-pointer h-full'/>
+                    {/* <Image src={IconFilter} alt="menu" className='inline-block cursor-pointer h-full'/> */}
                 </button>
             </div>
             <button type="button" onClick={onToggle} className='py-2 semibold-14 cursor-pointer items-center text-center'
