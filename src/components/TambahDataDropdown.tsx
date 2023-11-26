@@ -17,11 +17,12 @@ interface TambahDataDropdownProps {
   dropdownCol?: string;
   dropdownVal?: string[];
   dropdownValId?: string[];
+  signUp?: (newAkun: Record<string, string>) => Promise<void>; 
 }
 
 // ... (other imports)
 
-function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBeValidate, dropdownCol, dropdownVal, dropdownValId }: TambahDataDropdownProps) {
+function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBeValidate, dropdownCol, dropdownVal, dropdownValId, signUp }: TambahDataDropdownProps) {
     const [data, setData] = useState<Record<string, string>>({});
     const [modal, setModal] = useState(false);
     const [isMutating, setIsMutating] = useState(false);
@@ -34,7 +35,7 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
     const handleChange = () => {
       setModal(!modal);
     };
-  
+
     const handleSubmit = async (e: SyntheticEvent) => {
       e.preventDefault();
 
@@ -69,7 +70,11 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
         const { data: responseData, error } = await supabase
           .from(tableName)
           .upsert([data]);
-  
+        
+        if(tableName==='account' && signUp){
+          await signUp(data)
+        }
+
         if (error) {
           throw error;
         }
@@ -144,6 +149,7 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
                         value={data[column] || ""}
                         onChange={(e) => setData({ ...data, [column]: e.target.value })}
                         className="input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-400"
+                        required
                       >
                         <option value="" disabled hidden>
                           Pilih {formTitle[index]}
@@ -157,16 +163,34 @@ function TambahDataDropdown({tableName, formTitle, columns, label, icon, colToBe
                     ) : (
                       <div>
                         <input
-                          type="text"
+                          type={column === 'email' ? "email" : column === "password" ? "password" : "text"}
                           value={data[column] || ""}
                           onChange={(e) => setData({ ...data, [column]: e.target.value })}
-                          pattern={(column === 'price' || column === 'stock') ? '\\d+' : undefined} // Set pattern only for 'price' and 'stock'
+                          pattern={
+                            column === 'price' || column === 'stock'
+                              ? '\\d+'
+                              : column === 'email'
+                              ? '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}'
+                              : undefined
+                          }
                           placeholder={formTitle[index].toLowerCase() + "..."}
                           className="input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500 ... peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+                          required
+                          minLength={column === 'password' ? 6 : undefined}
                         />
                         {(column === 'price' || column === 'stock') && (
                           <span className="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
                             Harap masukkan angka yang valid
+                          </span>
+                        )}
+                        {column === 'email' && (
+                          <span className="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+                            Harap masukkan alamat email yang valid
+                          </span>
+                        )}
+                        {column === 'password' && (
+                          <span className="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+                            Harap masukkan paling tidak 6 karakter
                           </span>
                         )}
                       </div>
