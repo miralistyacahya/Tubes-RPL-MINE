@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import icon from '../../../public/icons/online 1.svg'
 import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
+import { NextResponse, type NextRequest } from 'next/server'
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 // import { useEffect, useState } from 'react'
 
@@ -43,9 +44,39 @@ export default function Login({
     //     setJwt(session.access_token)
     //   }
     // }, [])
+    try {
+      const {data: {user},} = await supabase.auth.getUser()
+      console.log("ini user", user)
 
-    const user = supabase.auth.getUser()
-    console.log(user)
+      let role;
+      const {data: roles} = await supabase.from('account').select('role').eq('email', user?.email);
+      
+      if(roles && roles.length> 0) {
+        role = roles[0].role;
+        console.log("ini role", role);
+
+        // const router = useRouter();
+
+        if (role === "admin") {
+          console.log("Redirecting to /account");
+          // Use Next.js router to perform client-side redirect
+          return redirect('/account');
+          // return NextResponse.next(); // Return a response (optional)
+        } else if (role === "kasir") {
+          // Use Next.js router to perform client-side redirect
+          return redirect('/cart');
+          // return NextResponse.next(); // Return a response (optional)
+        } else if (role === "inventaris") {
+          console.log("Redirecting to /product");
+          // Use Next.js router to perform client-side redirect
+          return redirect('/product');
+          // return NextResponse.next(); // Return a response (optional)
+        }
+      }
+
+    } catch(error){
+      console.log(error)
+    }
     // const { data: accountData, error: accountError } = await supabase
     //   .from('account')
     //   .select('email')
@@ -59,15 +90,15 @@ export default function Login({
     // }
 
     // Check the user's role
-    const role = "admin" //accountData?.role as string;
+    // const role = "admin" //accountData?.role as string;
 
-    if (role === 'admin') {
-      return redirect('/register');
-    } else if (role === 'kasir') {
-      return redirect('/cart');
-    } else if (role === 'inventaris') {
-      return redirect('/account');
-    }
+    // if (role === 'admin') {
+    //   return redirect('/account');
+    // } else if (role === 'kasir') {
+    //   return redirect('/cart');
+    // } else if (role === 'inventaris') {
+    //   return redirect('/product');
+    // }
   }
 
   return (
