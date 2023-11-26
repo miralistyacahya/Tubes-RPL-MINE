@@ -149,7 +149,7 @@ export default function app() {
                     <h1 className="heading bold-28 mt-8">Daftar Riwayat Transaksi</h1>
                     <div className="mt-6 mb-12 bg-white shadow-md sm:rounded-lg">
                         <div className="pt-12">
-                            <Table columns={columns} data={displayData}/>
+                            <Table columns={columns} data={displayData} message={"Tidak ada riwayat transaksi"}/>
                             <div className='grid grid-cols-3 items-center'>
                                 <div className='hidden lg:flex'>
                                     <p className="text-sm text-gray-700 pl-8"> 

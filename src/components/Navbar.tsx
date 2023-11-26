@@ -24,11 +24,9 @@ const Navbar = ({
           <ul className='hidden h-full gap-12 md:flex'>
             {/* ini nanti diatur rolenya dulu, cek role -> terus di mapping panggil NAV yang siapa */}
             {listOfNav.map((link) => (
-              <div className='medium-16 text-blue-500 flexCenter cursor-pointer transition-all hover:font-bold'>
-                <Link href={link.href}>
-                  {link.label}
-                </Link>
-              </div>
+              <Link href={link.href} key={link.key} className='medium-16 text-blue-500 flexCenter cursor-pointer transition-all hover:font-bold'>
+                {link.label}
+              </Link>
             ))}
           </ul>
 

@@ -269,7 +269,7 @@ export default function app() {
                             /> */}
                         </div>
                     </div>
-                    <Table columns={columns} data={displayData}/>
+                    <Table columns={columns} data={displayData} message={"Tidak ada produk"}/>
                     <div className='grid grid-cols-3 items-center'>
                         <div className='hidden lg:flex'>
                             <p className="text-sm text-gray-700 pl-8"> 
