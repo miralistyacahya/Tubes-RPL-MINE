@@ -1,7 +1,7 @@
 "use client"
 
 import { createClient } from "@/src/utils/supabase/client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import closeButton from "@/public/icons/close button cart.svg";
 

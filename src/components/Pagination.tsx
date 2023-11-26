@@ -1,3 +1,4 @@
+import React from "react"
 import ReactPaginate from "react-paginate"
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 

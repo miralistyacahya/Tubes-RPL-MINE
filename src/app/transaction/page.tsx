@@ -6,7 +6,7 @@ import Table, { TableColumn } from "@/src/components/Table"
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from "@/src/constants";
 import { transaction } from "@/src/types";
 import { createClient } from "@/src/utils/supabase/client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PostgrestError } from '@supabase/supabase-js';
 import InfoButton from "@/src/components/transaction/InfoButton";
 import TransactionInfo from "@/src/components/transaction/TransactionInfo";

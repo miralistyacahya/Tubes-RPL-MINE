@@ -1,5 +1,6 @@
 "use client"
 
+import React from 'react';
 import { useEffect, useState } from 'react';
 import SearchBar from '@/src/components/SearchBar'
 import Table, { TableColumn } from '@/src/components/Table'
@@ -13,9 +14,9 @@ import { product } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
 import { PostgrestError } from '@supabase/supabase-js';
 
-export type DbResult<T> = T extends PromiseLike<infer U> ? U : never
-export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never
-export type DbResultErr = PostgrestError
+export type DbResult<T> = T extends PromiseLike<infer U> ? U : never;
+export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never;
+export type DbResultErr = PostgrestError;
 
 const columns: TableColumn[] = [
     { label: 'ID', dataKey: 'idproduct', width: '1/4', align: 'center' },

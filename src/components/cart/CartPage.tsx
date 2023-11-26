@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import CartButton from "@/src/components/cart/CartButton";
 import Button from "@/src/components/Button";
 import plusButton from "@/public/icons/plus button cart.svg";
