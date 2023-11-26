@@ -7,7 +7,6 @@ import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
 import { NextResponse, type NextRequest } from 'next/server'
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
-// import { useEffect, useState } from 'react'
 
 const isAdmin = false //role === "admin"
 const isKasir = false
@@ -57,38 +56,6 @@ export default function Login({
         return redirect('/product');
       }
     }
-
-    // const [jwt, setJwt] = useState(null)
-
-    // useEffect(()=>{
-    //   const {user, session} = supabase.auth.getSession()
-    //   if (user &&session){
-    //     setJwt(session.access_token)
-    //   }
-    // }, [])
-    
-    // const { data: accountData, error: accountError } = await supabase
-    //   .from('account')
-    //   .select('email')
-    //   .eq('email', supabase.auth.) 
-    //   .single();
-
-    // if (accountError) {
-    //   // Handle error fetching role information
-    //   console.error('Error fetching role information:', accountError);
-    //   return redirect('/');
-    // }
-
-    // Check the user's role
-    // const role = "admin" //accountData?.role as string;
-
-    // if (role === 'admin') {
-    //   return redirect('/account');
-    // } else if (role === 'kasir') {
-    //   return redirect('/cart');
-    // } else if (role === 'inventaris') {
-    //   return redirect('/product');
-    // }
   }
 
   return (
@@ -99,7 +66,7 @@ export default function Login({
       }
       />
       <div className="animate-in flex-1 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 bg_dashboard">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex justify-center">
               <Image src={icon} alt="Logo" className="h-25 w-25" />
