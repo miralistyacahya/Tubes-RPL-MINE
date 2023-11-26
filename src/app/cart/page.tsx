@@ -129,6 +129,7 @@ export default function Cart() {
     // handle search
     const handleSearch = (query: string) => {
         setSearchQuery(query);
+        setPageNumber(0);
     }
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
