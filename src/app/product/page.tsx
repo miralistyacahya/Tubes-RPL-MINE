@@ -112,9 +112,7 @@ export default function app() {
                     price: item.price,
                     stock: item.stock,
                 }));
-                  
-                //   console.log("transformed:", transformedData);
-                  
+
                 if (transformedData) {
                     setDataItem(transformedData);
                 }
@@ -122,11 +120,7 @@ export default function app() {
             } catch (error: any) {
                 console.error('Error fetching data:', error.message);
             }              
-            // if (error) {
-            //   // Handle the error
-              
-            //   return <div>Error fetching data</div>;
-            // }
+
         };
         fetchData();
     }, [pageVisited, pageVisitedTo, totalCount, selectedOption, searchQuery]);
@@ -249,24 +243,8 @@ export default function app() {
                                 setCat={setCat}
                                 setCatId={setCatId}
                               /> 
-                            {/* <Button
-                                type="button"
-                                title="Tambah Kategori"
-                                icon={IconAddTop}
-                                round="rounded-lg"
-                                variant="btn_blue"
-                                size="semibold-14"
-                            /> */}
                             <TambahData tableName="category" columns={["categoryname"]} formTitle= {["Nama Kategori"]} label="Kategori" icon={IconAddTop} colToBeValidate="categoryname" />
                             <TambahDataDropdown tableName="product" columns={["productname", "category", "price", "stock"]} formTitle= {["Nama Produk", "Nama Kategori", "Harga", "Stock"]} label="Produk" icon={IconAddTop} colToBeValidate="productname" dropdownCol="category" dropdownVal={cat} dropdownValId={catId}/>
-                            {/* <Button
-                                type="button"
-                                title="Tambah Produk"
-                                icon={IconAddTop}
-                                round="rounded-lg"
-                                variant="btn_blue"
-                                size="semibold-14"
-                            /> */}
                         </div>
                     </div>
                     <Table columns={columns} data={displayData} message={"Tidak ada produk"}/>

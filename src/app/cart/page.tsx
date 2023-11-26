@@ -11,7 +11,7 @@ import CartPage from '@/src/components/cart/CartPage';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 import { product } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
-import { PostgrestError } from '@supabase/supabase-js'
+import { PostgrestError } from '@supabase/supabase-js';
 
 export type DbResult<T> = T extends PromiseLike<infer U> ? U : never
 export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never
