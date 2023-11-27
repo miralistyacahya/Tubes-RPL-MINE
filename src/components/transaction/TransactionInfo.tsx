@@ -19,7 +19,7 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
   useEffect(() => {
     const idtransaction = transactionDetails[0][0];
     getTransactionInfo(idtransaction);
-  }, []);
+  }, [transactionDetails]);
 
   const getTransactionInfo = async (idtransaction: number) => {
     try {
