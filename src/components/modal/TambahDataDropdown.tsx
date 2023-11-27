@@ -1,5 +1,4 @@
 import { SyntheticEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/src/utils/supabase/client";
 import Image from "next/image";
 import tutup from "../../../public/icons/tutup.svg";
@@ -36,7 +35,6 @@ function TambahDataDropdown({
   const [data, setData] = useState<Record<string, string>>({});
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
-  const router = useRouter();
   const supabase = createClient();
   const [isValid, setIsValid] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
