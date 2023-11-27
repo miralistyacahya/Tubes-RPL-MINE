@@ -1,5 +1,5 @@
 // import { GeistSans } from 'geist/font/sans'
-import Footer from '../components/Footer';
+import Footer from '../components/navigation/Footer';
 import React from 'react';
 import './globals.css';
 
