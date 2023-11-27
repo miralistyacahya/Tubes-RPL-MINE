@@ -1,7 +1,7 @@
 "use client"
 
 import { createClient } from "@/src/utils/supabase/client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import closeButton from "@/public/icons/close button cart.svg";
 
@@ -22,6 +22,8 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
     };
 
     fetchProductNames();
+    getTransactionInfo(transactionDetails[0][0]);
+
   }, [transactionDetails]);
 
   const getProductName = async (isproduct: number) => {
@@ -39,16 +41,46 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
       if (data) {
         return data[0].productname; 
       }
+
+
     } catch (error: any) {
       console.error("Error fetching data:", error.message);
     }
 
   }
 
+  const [info, setInfo] = useState<any>({});
+  const getTransactionInfo = async (idtransaction: number) => {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("transaction")
+        .select("username, transactiondate, totalcost")
+        .eq("idtransaction", idtransaction);
+  
+      if (error) {
+        throw error;
+      }
+  
+      const formattedDate = data[0]?.transactiondate.toString().split('T');
+      const date = formattedDate[0];
+      const time = formattedDate[1];
+    
+      const fixedDate = `${date} ${time}`;
+
+      if (data) {
+        setInfo({idtransaction, username: data[0]?.username, transactiondate: fixedDate, totalcost: data[0]?.totalcost});
+      }
+
+    } catch (error: any) {
+      console.error("Error fetching data:", error.message);
+    }
+  }
+
   return (
     <div>
       <div
-        className="fixed inset-0 z-50 justify-center bg-opacity-100 backdrop-filter backdrop-blur-sm mx-auto my-auto mb-8 bg-white shadow-md sm:rounded-lg"
+        className="fixed inset-0 z-50 justify-center bg-opacity-100 backdrop-filter backdrop-blur-sm mx-auto my-auto mb-40 bg-white shadow-md sm:rounded-lg"
         style={{ width: "600px", height: "450px" }}
       >
         <h1 className="heading bold-20 px-4 pt-6 pb-2">Detail Transaksi</h1>
@@ -64,21 +96,21 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
         <div className="flex items-center px-6 semibold-12 text-[#878787]">
           No. ID Transaksi :{" "}
           <div className="px-1">
-            <span className="regular-12"># 1</span>
+            <span className="regular-12"># { info.idtransaction }</span>
           </div>
         </div>
 
         <div className="flex items-center px-6 semibold-12 text-[#878787]">
           Tanggal :{" "}
           <div className="px-1">
-            <span className="regular-12">13/05/2022 12:00:00</span>
+            <span className="regular-12">{ info.transactiondate }</span>
           </div>
         </div>
 
         <div className="flex items-center px-6 semibold-12 text-[#878787]">
           Username Pegawai Kasir :{" "}
           <div className="px-1">
-            <span className="regular-12">Kasir 1</span>
+            <span className="regular-12">{ info.username }</span>
           </div>
         </div>
 

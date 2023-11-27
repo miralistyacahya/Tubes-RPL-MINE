@@ -2,10 +2,9 @@ import { SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/src/utils/supabase/client";
 import Image from "next/image";
-import tutup from "../../public/icons/tutup.svg"
-import simpan from "../../public/icons/simpan.svg"
-import Button from "./Button";
-import PopupNotification from "./PopupNotification";
+import tutup from "../../../public/icons/tutup.svg";
+import Button from "../button/Button";
+import PopupNotification from "../table/PopupNotification";
 
 interface TambahDataProps {
   tableName: string;
@@ -13,10 +12,17 @@ interface TambahDataProps {
   columns: string[];
   label: string; // Menambah prop label
   icon?: string;
-  colToBeValidate?: string
+  colToBeValidate?: string;
 }
 
-function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidate }: TambahDataProps) {
+function TambahData({
+  tableName,
+  formTitle,
+  columns,
+  label,
+  icon,
+  colToBeValidate,
+}: TambahDataProps) {
   const [data, setData] = useState<Record<string, string>>({});
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
@@ -35,21 +41,27 @@ function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidat
 
     try {
       if (colToBeValidate) {
-        const validationQuery = supabase.from(tableName).select(colToBeValidate).eq(colToBeValidate, data[colToBeValidate]);
-    
-        const { data: validationData, error: validationError } = await validationQuery;
-    
+        const validationQuery = supabase
+          .from(tableName)
+          .select(colToBeValidate)
+          .eq(colToBeValidate, data[colToBeValidate]);
+
+        const { data: validationData, error: validationError } =
+          await validationQuery;
+
         if (validationError) {
           throw validationError;
         }
-    
+
         if (validationData && validationData.length > 0) {
           // Data exists in the database, perform your validation logic here
           setIsFailed(true);
           setTimeout(() => {
-              setIsFailed(false);
+            setIsFailed(false);
           }, 3000);
-          console.error('Validation failed. Data already exists in the database.');
+          console.error(
+            "Validation failed. Data already exists in the database."
+          );
           return;
         }
       }
@@ -68,14 +80,14 @@ function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidat
       setData({});
       setIsSaved(true);
       setTimeout(() => {
-          setIsSaved(false);
-      }, 15000); 
+        setIsSaved(false);
+      }, 15000);
       window.location.reload();
       setModal(false);
     } catch (error) {
       setIsFailed(true);
       setTimeout(() => {
-          setIsFailed(false);
+        setIsFailed(false);
       }, 3000);
       console.error(`Terjadi kesalahan saat menambah ${label}:`, error);
     } finally {
@@ -86,15 +98,20 @@ function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidat
   return (
     <div>
       <Button
-          type="button"
-          title={`Tambah ${label}`}
-          icon={icon}
-          round="rounded-lg"
-          variant="btn_blue"
-          size="semibold-14"
-          onButtonClick={handleChange}
+        type="button"
+        title={`Tambah ${label}`}
+        icon={icon}
+        round="rounded-lg"
+        variant="btn_blue"
+        size="semibold-14"
+        onButtonClick={handleChange}
       />
-      <input type="checkbox" checked={modal} onChange={handleChange} className="modal-toggle" />
+      <input
+        type="checkbox"
+        checked={modal}
+        onChange={handleChange}
+        className="modal-toggle"
+      />
       <div className="modal">
         <div className="modal-box bg-white">
           <div className="modal-header">
@@ -103,17 +120,24 @@ function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidat
                 <Image src={tutup} alt="edit" />
               </button>
             </div>
-            <h3 style={{ fontSize: '28px', color: '#295F9A' }} className="font-bold text-lg mb-4 px-2">
+            <h3
+              style={{ fontSize: "28px", color: "#295F9A" }}
+              className="font-bold text-lg mb-4 px-2"
+            >
               Tambah {label}
             </h3>
             <form onSubmit={handleSubmit}>
               {columns.map((column, index) => (
                 <div key={column} className="form-control px-2">
-                  <label className="label font-semibold text-black">{formTitle[index]}</label>
+                  <label className="label font-semibold text-black">
+                    {formTitle[index]}
+                  </label>
                   <input
                     type="text"
                     value={data[column] || ""}
-                    onChange={(e) => setData({ ...data, [column]: e.target.value })}
+                    onChange={(e) =>
+                      setData({ ...data, [column]: e.target.value })
+                    }
                     className="input w-full focus:ring-2 ring-blue-500 input-bordered bg-white font-regular text-zinc-500"
                     placeholder={formTitle[index].toLowerCase() + "..."}
                     required
@@ -122,12 +146,12 @@ function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidat
               ))}
               <div className="modal-action flex justify-center px-28">
                 {!isMutating ? (
-                  <Button 
-                    type= "submit"
-                    title='Simpan'
-                    round='rounded-lg'
-                    variant='btn_blue'
-                    size='semibold-16'
+                  <Button
+                    type="submit"
+                    title="Simpan"
+                    round="rounded-lg"
+                    variant="btn_blue"
+                    size="semibold-16"
                     full={true}
                   />
                 ) : (
@@ -140,7 +164,7 @@ function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidat
           </div>
         </div>
         {isFailed && (
-            <PopupNotification
+          <PopupNotification
             message={`${tableName} gagal ditambah`}
             color={"red"}
             isClicked={isFailed}
@@ -148,14 +172,14 @@ function TambahData({ tableName, formTitle, columns, label, icon, colToBeValidat
           />
         )}
       </div>
-        {isSaved && (
-          <PopupNotification
-            message={`${tableName} berhasil ditambah`}
-            color={"green"}
-            isClicked={isSaved}
-            onClicked={(onClicked) => setIsSaved(onClicked)}
-          />
-        )}
+      {isSaved && (
+        <PopupNotification
+          message={`${tableName} berhasil ditambah`}
+          color={"green"}
+          isClicked={isSaved}
+          onClicked={(onClicked) => setIsSaved(onClicked)}
+        />
+      )}
     </div>
   );
 }

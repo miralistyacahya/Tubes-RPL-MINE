@@ -1,6 +1,6 @@
 import Image from "next/image";
 import searchButton from "../../public/icons/search button.svg"
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface SearchBarProps {
   containerWidth: string;
