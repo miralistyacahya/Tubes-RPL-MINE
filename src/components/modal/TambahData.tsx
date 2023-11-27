@@ -2,10 +2,9 @@ import { SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/src/utils/supabase/client";
 import Image from "next/image";
-import tutup from "../../public/icons/tutup.svg"
-import simpan from "../../public/icons/simpan.svg"
-import Button from "./Button";
-import PopupNotification from "./PopupNotification";
+import tutup from "../../../public/icons/tutup.svg"
+import Button from "../Button";
+import PopupNotification from "../PopupNotification";
 
 interface TambahDataProps {
   tableName: string;

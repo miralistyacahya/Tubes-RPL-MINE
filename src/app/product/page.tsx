@@ -1,6 +1,5 @@
 "use client"
 
-import Button from "@/src/components/Button";
 import Navbar from "@/src/components/Navbar";
 import Pagination from "@/src/components/Pagination";
 import SearchBar from "@/src/components/SearchBar";
@@ -13,10 +12,10 @@ import IconAddTop from "../../../public/icons/add-button-top-table.svg"
 import Dropdown from "@/src/components/Dropdown";
 
 import { PostgrestError } from '@supabase/supabase-js'
-import TambahData from "@/src/components/TambahData";
-import TambahDataDropdown from "@/src/components/TambahDataDropdown";
-import HapusData from "@/src/components/HapusData";
-import EditData from "@/src/components/EditData";
+import TambahData from "@/src/components/modal/TambahData";
+import TambahDataDropdown from "@/src/components/modal/TambahDataDropdown";
+import HapusData from "@/src/components/modal/HapusData";
+import EditData from "@/src/components/modal/EditData";
 
 export type DbResult<T> = T extends PromiseLike<infer U> ? U : never
 export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never

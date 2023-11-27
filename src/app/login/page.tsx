@@ -44,8 +44,7 @@ export default function Login({
     
     if(roles && roles.length> 0) {
       role = roles[0].role;
-      console.log("ini role", role);
-
+      // console.log("ini role", role);
 
       if (role === "admin") {
         console.log("Redirecting to /account");
@@ -55,6 +54,8 @@ export default function Login({
       } else if (role === "inventaris") {
         console.log("Redirecting to /product");
         router.push('/product');
+      } else {
+        router.push('/homepage');
       }
     }
   }
@@ -72,7 +73,7 @@ export default function Login({
             <div className="flex justify-center">
               <Image src={icon} alt="Logo" className="h-25 w-25" />
             </div>
-            {/* Welcome Text */}
+            
             <h1 className="flex justify-center bold-32 heading">Welcome</h1>
 
           <form

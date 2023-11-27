@@ -8,7 +8,7 @@ import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 
-const isAdmin = false //role === "admin"
+const isAdmin = false 
 const isKasir = false
 const isInventaris = false
 
@@ -83,25 +83,37 @@ export default function Register({
               placeholder="Masukkan username anda"
               required
             />
-            <label className="medium-16 heading" htmlFor="email">
-              Email
-            </label>
+            <label className="block" htmlFor="email">
+              <span className="medium-16 heading">Email</span>
+            
             <input
-              className="rounded-md px-4 py-2 bg-inherit border mb-3"
+              className="rounded-md px-4 py-2 bg-inherit border my-2 w-full peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+              type="email"
               name="email"
               placeholder="Masukkan email anda"
               required
+              pattern={
+                '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}'
+              }
             />
-            <label className="medium-16 heading"  htmlFor="password">
-              Password
+            <span className="hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+                Harap masukkan alamat email yang valid
+            </span>
             </label>
+            <label  htmlFor="password" className='block'>
+            <span className="block medium-16 heading">Password</span>
             <input
-              className="rounded-md px-4 py-2 bg-inherit border mb-6"
+              className="rounded-md px-4 py-2 bg-inherit border mt-2 mb-4 w-full peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
               type="password"
               name="password"
               placeholder="••••••••"
               required
+              minLength={6}
             />
+            <span className="hidden text-sm mb-2 text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+              Harap masukkan paling tidak 6 karakter
+            </span>
+            </label>
             <button type="submit" className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
               Daftar
             </button>
