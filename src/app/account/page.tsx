@@ -45,7 +45,7 @@ export default function app() {
           .select("count");
         setTotalCount(totalCountResponse?.[0]?.count || 0);
 
-        console.log(totalCount);
+
 
         const newPageCount = Math.ceil(totalCount / dataPerPage);
         setPageCount(newPageCount);

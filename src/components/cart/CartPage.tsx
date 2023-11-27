@@ -18,6 +18,7 @@ interface CartProps {
   handleButtonMinClick: (productCart: (string | number)[]) => void;
   handleButtonDelClick: (productCart: (string | number)[]) => void;
   handleButtonFailedClick: () => void;
+  isStockEmpty: boolean;
 }
 
 const CartPage: React.FC<CartProps> = ({
@@ -31,6 +32,7 @@ const CartPage: React.FC<CartProps> = ({
   handleButtonMinClick,
   handleButtonDelClick,
   handleButtonFailedClick,
+  isStockEmpty,
 }) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
@@ -267,6 +269,17 @@ const CartPage: React.FC<CartProps> = ({
             onClicked={(onClicked) => setIsSuccess(onClicked)}
           />
         )}
+
+          {isStockEmpty && (
+            <PopupNotification
+              message={"Produk habis"}
+              color={"red"}
+              isClicked={isStockEmpty}
+              onClicked={(onClicked) => setIsSuccess(onClicked)}
+            />
+          )
+          }
+
       </div>
     </div>
   );

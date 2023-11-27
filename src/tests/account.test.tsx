@@ -1,25 +1,17 @@
-// import '@testing-library/jest-dom';
-
-// describe('ngetes jest', () => {
-//     test('mamtematka ini  benar', () => {
-//       expect(1+1).toEqual(2);
-//     });
-// });
-
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { createClient } from '@/src/utils/supabase/client';
-import { useRouter } from 'next/navigation';
+import React from 'react';
+import { render, screen, getByText} from '@testing-library/react';
 import Account from '@/src/app/account/page';
+// import mockRouter from 'next-router-mock';
 
-jest.mock('@/src/utils/supabase/client', () => ({
-  createClient: jest.fn(),
-}));
+// jest.mock('next/router', () => jest.requireActual('next-router-mock'))
 
 describe('Account', () => {
   it('renders account component correctly', () => {
+
+    // mockRouter.push("/initial-path");
     render(<Account />);
+
     expect(screen.getByText(/Daftar Akun/i)).toBeInTheDocument();
   });
-});
+}); 

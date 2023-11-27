@@ -5,10 +5,11 @@ import addHoverButton from "@/public/icons/add button hover.svg";
 import PopupNotification from "../table/PopupNotification";
 
 interface AddedButtonProps {
+  isStockEmpty: boolean;
   onButtonClick: () => void;
 }
 
-const AddedButton: React.FC<AddedButtonProps> = ({ onButtonClick }) => {
+const AddedButton: React.FC<AddedButtonProps> = ({ onButtonClick, isStockEmpty }) => {
   const [isClicked, setIsClicked] = React.useState(false);
 
   return (
@@ -25,13 +26,24 @@ const AddedButton: React.FC<AddedButtonProps> = ({ onButtonClick }) => {
       >
         <Image src={addHoverButton} alt="add hover" />
       </button>
+      
+      { !isStockEmpty && (
+        <PopupNotification
+          message={"Produk ditambahkan ke keranjang"}
+          color={"green"}
+          isClicked={isClicked}
+          onClicked={(onClicked) => setIsClicked(onClicked)}
+        />
+      )}
 
-      <PopupNotification
-        message={"Produk ditambahkan ke keranjang"}
-        color={"green"}
-        isClicked={isClicked}
-        onClicked={(onClicked) => setIsClicked(onClicked)}
-      />
+      { isStockEmpty && (
+        <PopupNotification
+          message={"Produk habis"}
+          color={"red"}
+          isClicked={isClicked}
+          onClicked={(onClicked) => setIsClicked(onClicked)}
+        />
+      )}
     </div>
   );
 };

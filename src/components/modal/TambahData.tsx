@@ -1,11 +1,10 @@
 import { SyntheticEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/src/utils/supabase/client";
 import Image from "next/image";
 import tutup from "../../../public/icons/tutup.svg";
 import Button from "../button/Button";
 import PopupNotification from "../table/PopupNotification";
-
+ 
 interface TambahDataProps {
   tableName: string;
   formTitle: string[];
@@ -26,7 +25,6 @@ function TambahData({
   const [data, setData] = useState<Record<string, string>>({});
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
-  const router = useRouter();
   const supabase = createClient();
   const [isSaved, setIsSaved] = useState(false);
   const [isFailed, setIsFailed] = useState(false);

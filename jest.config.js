@@ -1,12 +1,31 @@
-module.exports = {
-  preset: 'ts-jest',
+const nextJest = require('next/jest')
+
+const createJestConfig = nextJest({
+  dir: './',
+})
+
+
+const customJestConfig = {
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
-  testMatch: ["**/tests/**/*\.test.tsx"],
-  transform: {
-     "^.+\\.tsx$": "ts-jest",
-  },
-  setupFiles: ["<rootDir>/.jest/env.js"],
+  // testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  // transformIgnorePatterns: ['<rootDir>/node_modules/'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    '^jose$': require.resolve('jose'),
   },
-};
+
+}
+
+module.exports = async (...args) => {
+  const fn = createJestConfig(customJestConfig);
+  const res = await fn(...args);
+
+  res.transformIgnorePatterns = res.transformIgnorePatterns.map((pattern) => {
+      if (pattern === '/node_modules/') {
+          return '/node_modules(?!/next)/';
+      }
+      return pattern;
+  });
+
+  return res;
+}; 

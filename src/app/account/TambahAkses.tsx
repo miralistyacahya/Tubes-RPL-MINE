@@ -1,11 +1,10 @@
 'use client'
 
 import TambahDataDropdown from '@/src/components/modal/TambahDataDropdown'
-import React, { useState } from 'react'
+import React from 'react'
 import IconAddTop from "../../../public/icons/add-button-top-table.svg";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { redirect } from 'next/navigation';
-
+ 
 const TambahAkses: React.FC = () => {
     const signUp = async (newAkun: Record<string, string>) => {
     
