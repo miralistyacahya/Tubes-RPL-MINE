@@ -2,9 +2,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import PlaceholderImage from "../../public/icons/Logo-Mine.png";
-import IconMenu from "../../public/icons/menu.svg";
-import { NavItem } from "../../constants/types";
+import PlaceholderImage from "@/public/icons/Logo-Mine.png";
+import IconMenu from "@/public/icons/menu.svg";
+import { NavItem } from "@/src/constants/types";
 import { useRouter } from "next/router";
 import AuthButton from "../button/AuthButton";
 

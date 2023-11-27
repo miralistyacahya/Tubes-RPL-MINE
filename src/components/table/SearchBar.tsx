@@ -1,5 +1,5 @@
 import Image from "next/image";
-import searchButton from "../../public/icons/search button.svg"
+import searchButton from "@/public/icons/search button.svg"
 import React, { useState } from "react";
 
 interface SearchBarProps {
