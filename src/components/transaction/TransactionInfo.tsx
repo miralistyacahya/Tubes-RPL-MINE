@@ -13,43 +13,14 @@ interface transactionInfoProps {
 }
 
 const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, transactionCost, onClose }) => {
-  const [productNames, setProductNames] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchProductNames = async () => {
-      const names = await Promise.all(transactionDetails.map(order => getProductName(order[1])));
-      setProductNames(names);
-    };
-
-    fetchProductNames();
-    getTransactionInfo(transactionDetails[0][0]);
-
-  }, [transactionDetails]);
-
-  const getProductName = async (isproduct: number) => {
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("product")
-        .select("productname")
-        .eq("idproduct", isproduct);
-
-      if (error) {
-        throw error;
-      }
-
-      if (data) {
-        return data[0].productname; 
-      }
-
-
-    } catch (error: any) {
-      console.error("Error fetching data:", error.message);
-    }
-
-  }
 
   const [info, setInfo] = useState<any>({});
+
+  useEffect(() => {
+    const idtransaction = transactionDetails[0][0];
+    getTransactionInfo(idtransaction);
+  }, []);
+
   const getTransactionInfo = async (idtransaction: number) => {
     try {
       const supabase = createClient();
@@ -141,7 +112,7 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
                       whiteSpace: "nowrap",
                     }}
                   >
-                    { productNames[index] }
+                    { order[1] }
                   </div>
                 </div>
                 <div className="grid grid-cols-3">
