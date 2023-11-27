@@ -58,7 +58,7 @@ export default function Homepage() {
         />
       ) : (
         <nav className="flexBetween max-container padding-container bg-white relative z-30 py-3">
-          <Link href="/homepage">
+          <Link href="/">
             <Image src={PlaceholderImage} alt="logo" width={88} />
           </Link>
           <div className="flex flex-row gap-12 items-center">
@@ -136,7 +136,7 @@ export default function Homepage() {
                 roleUser === "inventaris" ? (
                 <span>
                   <span className="text-blue-500 font-semibold">
-                    {roleUser}{" "}
+                  {"pegawai "}{roleUser}{"! "}
                   </span>
                   Selamat bekerja hari ini!
                 </span>

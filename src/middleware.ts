@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
 
     const res = NextResponse.next();
     const {data:{session},} = await supabase.auth.getSession()
-    console.log("session", session)
+    // console.log("session", session)
 
     let role;
 
@@ -19,11 +19,11 @@ export async function middleware(request: NextRequest) {
 
     if(session) {
       const {data: roles, error} = await supabase.from('account').select('role').eq('email', session?.user.email);
-      console.log("sess", session?.user.email);
+      // console.log("sess", session?.user.email);
 
       if(roles && roles.length> 0) {
         role = roles[0].role;
-        console.log("hloo role", role);
+        // console.log("hloo role", role);
       }
       
       if(request.nextUrl.pathname.startsWith(accAdminPath) && role!=="admin") {
@@ -47,7 +47,7 @@ export async function middleware(request: NextRequest) {
       } 
     }
     else{
-      console.log("fafifulalala");
+      // console.log("fafifulalala");
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/login";
       return NextResponse.redirect(redirectUrl);

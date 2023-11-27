@@ -42,8 +42,8 @@ export default function Login({
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    console.log("ini user", user);
-    console.log("ini email", user?.email);
+    // console.log("ini user", user);
+    // console.log("ini email", user?.email);
 
     let role;
     const { data: roles } = await supabase
@@ -56,12 +56,12 @@ export default function Login({
       // console.log("ini role", role);
 
       if (role === "admin") {
-        console.log("Redirecting to /account");
+        // console.log("Redirecting to /account");
         router.push("/account");
       } else if (role === "kasir") {
         router.push("/cart");
       } else if (role === "inventaris") {
-        console.log("Redirecting to /product");
+        // console.log("Redirecting to /product");
         router.push("/product");
       } else {
         router.push("/");

@@ -32,7 +32,7 @@ const TambahAkses: React.FC = () => {
             console.log(error)
             // return redirect('/account?message=Could not authenticate user')
         }
-        return redirect('/account')
+        // return redirect('/account')
     };
 
   return (
