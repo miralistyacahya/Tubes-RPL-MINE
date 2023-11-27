@@ -103,7 +103,7 @@ export default function app() {
       const supabase = createClient();
       const { data, error } = await supabase
         .from("orders")
-        .select("idproduct, quantity, price")
+        .select("productname, quantity, price")
         .eq("idtransaction", idtransaction);
 
       if (error) {
@@ -113,7 +113,7 @@ export default function app() {
       if (data) {
         const productData = data.map((product) => [
           idtransaction,
-          product.idproduct,
+          product.productname,
           product.quantity,
           product.price,
         ]);
