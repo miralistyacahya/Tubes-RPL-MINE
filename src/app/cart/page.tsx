@@ -209,7 +209,34 @@ export default function Cart() {
     };
 
     const currentDate: Date = new Date();
-    const user: string = "Kasir 1";
+
+    // handle user
+    const [user, setUser] = useState<string>("");
+    const getUsername = async () => {
+        const supabase = createClient();
+
+        const { data: { user } } = await supabase.auth.getUser();
+
+        const userEmail = user?.email;
+
+        if (userEmail) {
+            const { data: userData, error } = await supabase
+            .from('account')
+            .select('username')
+            .eq('email', user?.email);
+
+            if (error) {
+                console.error("Error fetching account data:", error);
+                return;
+            }
+
+            setUser(userData?.[0]?.username || "");
+        
+        }
+
+    }
+
+    getUsername();
 
     const isAdmin = false;
     const isInventaris = false;

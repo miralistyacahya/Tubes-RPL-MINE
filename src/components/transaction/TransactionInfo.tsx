@@ -48,7 +48,7 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
   return (
     <div>
       <div
-        className="fixed inset-0 z-50 justify-center bg-opacity-100 backdrop-filter backdrop-blur-sm mx-auto my-auto mb-8 bg-white shadow-md sm:rounded-lg"
+        className="fixed inset-0 z-50 justify-center bg-opacity-100 backdrop-filter backdrop-blur-sm mx-auto my-auto mb-40 bg-white shadow-md sm:rounded-lg"
         style={{ width: "600px", height: "450px" }}
       >
         <h1 className="heading bold-20 px-4 pt-6 pb-2">Detail Transaksi</h1>
