@@ -1,3 +1,5 @@
+# MINE - Bormy Online
+
 ## Table of Contents
 1. [General Information](#general-information)
 2. [Use Case Implementation](#use-case)
@@ -12,6 +14,20 @@
 ## General Information
 Bormy Online (MINE) adalah sebuah website sistem manajemen informasi point of sales yang akan membantu pemilik dalam melakukan pencatatan barang, melakukan transaksi penjualan, serta mencatat transaksi penjualan yang dilakukan di Bormy. Sistem akan dikelola oleh seorang admin yang akan mengatur hak akses dari setiap pegawai yang terbagi menjadi pegawai inventaris dan juga pegawai kasir. Sistem ini juga dapat menyajikan laporan hasil transaksi penjualan harian, mingguan,maupun bulanan serta riwayat daftar transaksi penjualan setiap pelanggan di Bormy
 
+Website ini memiliki beberapa fitur, yaitu:
+- Mengelola keranjang<br>
+ Menambahkan atau mengurangi produk ke keranjang serta dapat menambahkan keranjang baru atau menghapus keranjang.
+- Mencari produk <br>
+Menghasilkan data produk berdasarkan masukan berupa keyword pencarian produk.
+- Mengelola produk <br>
+Mengelola (menambahkan, menghapus, atau memperbarui) data produk berdasarkan input yang diberikan.
+- Mengelola akun <br>
+Mengelola akun melalui masukan data akun pengguna menjadi format data username yang dapat digunakan pada modul lain.
+- Mengelola transaksi <br>
+Mengelola transaksi berdasarkan data keranjang yang ingin dilanjutkan ke tahap pembayaran, serta terhubung otomatis dengan modul produk untuk penyesuaian jumlah stok produk.
+- Mengelola Daftar Riwayat
+Mengelola daftar riwayat transaksi berdasarkan data transaksi yang berhasil
+.
 <a name="use-case"></a>
 
 ## Use Case Implementation
@@ -25,7 +41,7 @@ Bormy Online (MINE) adalah sebuah website sistem manajemen informasi point of sa
 |                             |          | - Mengelola Inventaris      |
 | Rania Sasi Kirana           | 18221168 | - Mengelola Keranjang       |
 |                             |          | - Melihat Isi Keranjang     |
-|                             |          | - Melihat Riwayat Transaksi
+|                             |          | - Mengelola Riwayat Transaksi
 | Minarti                     | 10023216 | -                            |
 
 <a name="capture-screen"></a>
