@@ -22,6 +22,8 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
     };
 
     fetchProductNames();
+    getTransactionInfo(transactionDetails[0][0]);
+
   }, [transactionDetails]);
 
   const getProductName = async (isproduct: number) => {
@@ -39,10 +41,40 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
       if (data) {
         return data[0].productname; 
       }
+
+
     } catch (error: any) {
       console.error("Error fetching data:", error.message);
     }
 
+  }
+
+  const [info, setInfo] = useState<any>({});
+  const getTransactionInfo = async (idtransaction: number) => {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("transaction")
+        .select("username, transactiondate, totalcost")
+        .eq("idtransaction", idtransaction);
+  
+      if (error) {
+        throw error;
+      }
+  
+      const formattedDate = data[0]?.transactiondate.toString().split('T');
+      const date = formattedDate[0];
+      const time = formattedDate[1];
+    
+      const fixedDate = `${date} ${time}`;
+
+      if (data) {
+        setInfo({idtransaction, username: data[0]?.username, transactiondate: fixedDate, totalcost: data[0]?.totalcost});
+      }
+
+    } catch (error: any) {
+      console.error("Error fetching data:", error.message);
+    }
   }
 
   return (
@@ -64,21 +96,21 @@ const TransactionInfo: React.FC<transactionInfoProps> = ({ transactionDetails, t
         <div className="flex items-center px-6 semibold-12 text-[#878787]">
           No. ID Transaksi :{" "}
           <div className="px-1">
-            <span className="regular-12"># 1</span>
+            <span className="regular-12"># { info.idtransaction }</span>
           </div>
         </div>
 
         <div className="flex items-center px-6 semibold-12 text-[#878787]">
           Tanggal :{" "}
           <div className="px-1">
-            <span className="regular-12">13/05/2022 12:00:00</span>
+            <span className="regular-12">{ info.transactiondate }</span>
           </div>
         </div>
 
         <div className="flex items-center px-6 semibold-12 text-[#878787]">
           Username Pegawai Kasir :{" "}
           <div className="px-1">
-            <span className="regular-12">Kasir 1</span>
+            <span className="regular-12">{ info.username }</span>
           </div>
         </div>
 
