@@ -1,11 +1,12 @@
-import Link from 'next/link'
-import { headers, cookies } from 'next/headers'
-import { createClient } from '../../utils/supabase/server'
-import { redirect } from 'next/navigation'
-import icon from '../../../public/icons/online 1.svg'
-import Image from 'next/image'
+"use client"
+
+import Link from 'next/link';
+import React, { useState } from 'react';
+import { createClient } from '@/src/utils/supabase/client';
+import { useRouter } from 'next/navigation';
+import icon from '../../../public/icons/online 1.svg';
+import Image from 'next/image';
 import Navbar from '@/src/components/Navbar';
-import { NextResponse, type NextRequest } from 'next/server'
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 
 const isAdmin = false //role === "admin"
@@ -18,13 +19,12 @@ export default function Login({
 }: {
   searchParams: { message: string }
 }) {
-  const signIn = async (account: FormData) => {
-    'use server'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter(); 
 
-    const email = account.get('email') as string
-    const password = account.get('password') as string
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
+  const signIn = async () => {
+    const supabase = createClient();
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -32,11 +32,12 @@ export default function Login({
     })
 
     if (error) {
-      return redirect('/login?message=Gagal Mengautentikasi Pengguna')
+      router.push('/login?message=Gagal Mengautentikasi Pengguna')
     }
     
-    const {data: {user},} = await supabase.auth.getUser()
+    const { data: { user } } = await supabase.auth.getUser();
     console.log("ini user", user)
+    console.log("ini email", user?.email)
 
     let role;
     const {data: roles} = await supabase.from('account').select('role').eq('email', user?.email);
@@ -48,12 +49,12 @@ export default function Login({
 
       if (role === "admin") {
         console.log("Redirecting to /account");
-        return redirect('/account');
+        router.push('/account');
       } else if (role === "kasir") {
-        return redirect('/cart');
+        router.push('/cart')
       } else if (role === "inventaris") {
         console.log("Redirecting to /product");
-        return redirect('/product');
+        router.push('/product');
       }
     }
   }
@@ -76,7 +77,11 @@ export default function Login({
 
           <form
             className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
-            action={signIn}
+
+            onSubmit={(e) => {
+              e.preventDefault();
+              signIn();
+            }}
           >
             <label className="medium-16 heading" htmlFor="email">
               Email
@@ -85,6 +90,8 @@ export default function Login({
               className="rounded-md px-4 py-2 bg-inherit border mb-3"
               name="email"
               placeholder="Masukkan email anda"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
             <label className="medium-16 heading"  htmlFor="password">
@@ -95,9 +102,11 @@ export default function Login({
               type="password"
               name="password"
               placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button formAction={signIn} className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
+            <button type="submit" className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
               Masuk
             </button>
 

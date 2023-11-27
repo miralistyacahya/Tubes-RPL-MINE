@@ -167,7 +167,7 @@ export default function app() {
                             <TambahAkses/>
                         </div>
                     </div>
-                    <Table columns={columns} data={displayData} emptyMessage='Tidak ada akun'/>
+                    <Table columns={columns} data={displayData} message='Tidak ada akun'/>
                     <div className='grid grid-cols-3 items-center'>
                         <div className='hidden lg:flex'>
                             <p className="text-sm text-gray-700 pl-8"> 

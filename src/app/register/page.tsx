@@ -1,7 +1,8 @@
+"use client"
+
 import Link from 'next/link'
-import { headers, cookies } from 'next/headers'
-import { createClient } from '../../utils/supabase/server'
-import { redirect } from 'next/navigation'
+import { createClient } from '../../utils/supabase/client';
+import { useRouter } from 'next/navigation';
 import icon from '../../../public/icons/online 1.svg'
 import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
@@ -11,41 +12,20 @@ const isAdmin = false //role === "admin"
 const isKasir = false
 const isInventaris = false
 
-
 export default function Register({
   searchParams,
 }: {
   searchParams: { message: string }
 }) {
-  const signIn = async (account: FormData) => {
-    'use server'
-
-    const email = account.get('email') as string
-    const password = account.get('password') as string
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      return redirect('/login?message=Gagal Mengautentikasi Pengguna')
-    }
-
-    return redirect('/account')
-  }
+  const router = useRouter();
 
   const signUp = async (account: FormData) => {
-    'use server'
+    const supabase = createClient();
 
-    const origin = headers().get('origin')
-    const username = account.get('username') as string
-    const email = account.get('email') as string
-    const password = account.get('password') as string
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
+    const origin = window.location.origin;
+    const username = account.get('username') as string;
+    const email = account.get('email') as string;
+    const password = account.get('password') as string;
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -56,17 +36,19 @@ export default function Register({
     })
 
     try {
-      const role = 'admin'
-      const {data : responsedata, error: err} = await supabase.from('account').upsert([{username: username, password: password, role: role, email: email}])
+      const role = ''
+      const { data : responsedata, error: err } = await supabase
+      .from('account')
+      .upsert([{username: username, password: password, role: role, email: email}])
     } catch (err) {
       console.log(err);
     }
     
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      router.push('register?message=Gagal Mendaftarkan Pengguna')
     }
 
-    // return redirect('login')
+    router.push('login')
   }
 
   return (
@@ -87,7 +69,10 @@ export default function Register({
 
           <form
             className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
-            action={signUp}
+            onSubmit={(e) => {
+              e.preventDefault();
+              signUp(new FormData(e.currentTarget));
+            }}
           >
             <label className="medium-16 heading" htmlFor="username">
               Username
@@ -117,7 +102,7 @@ export default function Register({
               placeholder="••••••••"
               required
             />
-            <button formAction={signUp} className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
+            <button type="submit" className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
               Daftar
             </button>
 
