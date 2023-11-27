@@ -4,7 +4,7 @@ import Image from "next/image";
 import tutup from "../../../public/icons/tutup.svg";
 import Button from "../button/Button";
 import PopupNotification from "../table/PopupNotification";
-
+ 
 interface TambahDataProps {
   tableName: string;
   formTitle: string[];

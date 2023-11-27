@@ -14,4 +14,4 @@ describe('Account', () => {
 
     expect(screen.getByText(/Daftar Akun/i)).toBeInTheDocument();
   });
-});
+}); 
