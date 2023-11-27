@@ -114,7 +114,7 @@ export default function Register({
             <span className="hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
                 Harap masukkan alamat email yang valid
             </span>
-            
+
             <label className="medium-16 heading"  htmlFor="password">
               Password
             </label>
