@@ -1,6 +1,4 @@
 import { SyntheticEvent, useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Updated import
-import { createClient } from "@/src/utils/supabase/client";
 import tutup from "../../../public/icons/tutup.svg";
 import hapus from "../../../public/icons/delete button.svg";
 import Image from "next/image";
