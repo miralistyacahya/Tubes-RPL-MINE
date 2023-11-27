@@ -80,6 +80,31 @@ function TambahDataDropdown({
           }, 3000);
           return;
         }
+
+        if(tableName==='account'){
+          const validationEmail = supabase
+          .from(tableName)
+          .select('email')
+          .eq('email', data['email']);
+
+          const { data: validEmail, error: emailError } =
+            await validationEmail;
+
+          if (emailError) {
+            throw emailError;
+          }
+          
+          if(validEmail && validEmail.length > 0){
+            console.error(
+              "Validation failed. Data already exists in the database."
+            );
+            setIsFailed(true);
+            setTimeout(() => {
+              setIsFailed(false);
+            }, 3000);
+            return;
+          }
+        }
       }
 
       const { data: responseData, error } = await supabase
@@ -94,7 +119,7 @@ function TambahDataDropdown({
         throw error;
       }
 
-      console.log(`${label} berhasil ditambahkan:`, responseData);
+      // console.log(`${label} berhasil ditambahkan:`, responseData);
       setData({});
       setIsSaved(true);
       setTimeout(() => {
@@ -103,7 +128,7 @@ function TambahDataDropdown({
       setModal(false);
       window.location.reload();
     } catch (error) {
-      console.error(`Terjadi kesalahan saat menambah ${label}:`, error);
+      // console.error(`Terjadi kesalahan saat menambah ${label}:`, error);
       setIsFailed(true);
       setTimeout(() => {
         setIsFailed(false);
