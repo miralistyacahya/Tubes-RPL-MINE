@@ -3,9 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import PlaceholderImage from "../../public/icons/Logo-Mine.png"
-import IconProfile from "../../public/icons/icon-profile.svg"
 import IconMenu from "../../public/icons/menu.svg"
-import Button from './Button'
 import { NavItem } from '../constants/types'
 import { useRouter } from 'next/router'
 import AuthButton from './AuthButton'
@@ -20,7 +18,7 @@ const Navbar = ({
 }) => {
   return (
     <nav className='flexBetween max-container padding-container bg-white relative z-30 py-3'>
-      <Link href="/">
+      <Link href="/homepage">
         <Image src={PlaceholderImage} alt="logo" width={88}/>
       </Link>
       {listOfNav.length >= 1 ? 
@@ -33,7 +31,7 @@ const Navbar = ({
             </Link>
             ))}
           </ul>
-          <div className='md:flexCenter hidden medium-16 text-blue-500 flexCenter cursor-pointer transition-all hover:font-bold'>
+          <div>
               <AuthButton/>
           </div>
         </div>

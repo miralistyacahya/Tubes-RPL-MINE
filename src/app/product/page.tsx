@@ -1,6 +1,5 @@
 "use client"
 
-import Button from "@/src/components/Button";
 import Navbar from "@/src/components/Navbar";
 import Pagination from "@/src/components/Pagination";
 import SearchBar from "@/src/components/SearchBar";

@@ -35,24 +35,23 @@ export default function Login({
     }
     
     const {data: {user},} = await supabase.auth.getUser()
-    console.log("ini user", user)
+    // console.log("ini user", user)
 
     let role;
     const {data: roles} = await supabase.from('account').select('role').eq('email', user?.email);
     
     if(roles && roles.length> 0) {
       role = roles[0].role;
-      console.log("ini role", role);
-
+      // console.log("ini role", role);
 
       if (role === "admin") {
-        console.log("Redirecting to /account");
         return redirect('/account');
       } else if (role === "kasir") {
         return redirect('/cart');
       } else if (role === "inventaris") {
-        console.log("Redirecting to /product");
         return redirect('/product');
+      } else {
+        return redirect('/homepage');
       }
     }
   }
@@ -70,7 +69,7 @@ export default function Login({
             <div className="flex justify-center">
               <Image src={icon} alt="Logo" className="h-25 w-25" />
             </div>
-            {/* Welcome Text */}
+            
             <h1 className="flex justify-center bold-32 heading">Welcome</h1>
 
           <form

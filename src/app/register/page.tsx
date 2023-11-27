@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 
-const isAdmin = false //role === "admin"
+const isAdmin = false 
 const isKasir = false
 const isInventaris = false
 
@@ -17,26 +17,6 @@ export default function Register({
 }: {
   searchParams: { message: string }
 }) {
-  const signIn = async (account: FormData) => {
-    'use server'
-
-    const email = account.get('email') as string
-    const password = account.get('password') as string
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      return redirect('/register?message=Gagal Mengautentikasi Pengguna')
-    }
-
-    return redirect('/account')
-  }
-
   const signUp = async (account: FormData) => {
     'use server'
 
@@ -56,15 +36,16 @@ export default function Register({
     })
 
     try {
-      const role = 'admin'
-      const {data : responsedata, error: err} = await supabase.from('account').upsert([{username: username, password: password, role: role, email: email}])
+      const {data : responsedata, error: err} = await supabase.from('account').upsert([{username: username, password: password, role:"", email: email}])
     } catch (err) {
       console.log(err);
     }
     
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      return redirect('/register?message=Tidak dapat membuat akun')
     }
+
+    return redirect('login')
   }
 
   return (

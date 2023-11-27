@@ -13,7 +13,7 @@ export default function AuthButton() {
   }
 
   return (
-    <div className="">
+    <div className="md:flexCenter hidden medium-16 text-blue-500 flexCenter cursor-pointer transition-all hover:font-bold">
       <form action={signOut}>
         <button className=""> 
           Logout
