@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import addButton from "@/public/icons/add button.svg";
 import addHoverButton from "@/public/icons/add button hover.svg";
-import PopupNotification from "../PopupNotification";
+import PopupNotification from "../table/PopupNotification";
 
 interface AddedButtonProps {
   onButtonClick: () => void;

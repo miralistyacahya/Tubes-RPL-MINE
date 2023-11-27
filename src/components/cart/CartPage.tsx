@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import CartButton from "@/src/components/cart/CartButton";
-import Button from "@/src/components/Button";
+import Button from "@/src/components/button/Button";
 import plusButton from "@/public/icons/plus button cart.svg";
 import minusButton from "@/public/icons/min button cart.svg";
 import closeButton from "@/public/icons/close button cart.svg";
 import { createClient } from "@/src/utils/supabase/client";
-import PopupNotification from "../PopupNotification";
+import PopupNotification from "../table/PopupNotification";
 
 interface CartProps {
   user: string;
@@ -71,16 +71,14 @@ const CartPage: React.FC<CartProps> = ({
         const newIdTransaction = data[0].idtransaction;
 
         // insert to orders (transaction detail)
-        await supabase
-          .from("orders")
-          .insert(
-            cart.map((product) => ({
-              idtransaction: newIdTransaction,
-              idproduct: product[0],
-              quantity: product[3],
-              price: product[2],
-            }))
-          );
+        await supabase.from("orders").insert(
+          cart.map((product) => ({
+            idtransaction: newIdTransaction,
+            idproduct: product[0],
+            quantity: product[3],
+            price: product[2],
+          }))
+        );
       }
     } catch (error: any) {
       console.error("Error insert data:", error.message);

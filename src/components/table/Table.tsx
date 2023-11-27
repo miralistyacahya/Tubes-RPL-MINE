@@ -10,12 +10,16 @@ export type TableColumn = {
 type TableProps = {
     columns: TableColumn[];
     data: Record<string, string | JSX.Element | number >[];
-    emptyMessage?: string;
+    message: string;
 };
 
-const Table: React.FC<TableProps> = ({ columns, data, emptyMessage = 'Tidak ada produk' }) => {
+const Table: React.FC<TableProps> = ({ columns, data, message }) => {
     if (!columns || !data || data.length === 0) {
-        return <div className='px-8'>{emptyMessage}</div>;
+        return (
+            <div className='px-8'>
+                <i>{message}</i>
+            </div>
+        )
     }
 
     return (

@@ -1,6 +1,6 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
-import PopupNotification from "../PopupNotification";
+import PopupNotification from "../table/PopupNotification";
 
 interface CartButtonProps {
   src: StaticImageData;
