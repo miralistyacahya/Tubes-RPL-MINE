@@ -217,58 +217,100 @@ export default function Cart() {
     }
   }, [isFailed]);
 
-  const handleButtonPlusClick = (productCart: (string | number)[]) => {
-    // Add the product to the cart by 1
-    // id product, name, price, qty
-    const prevTotal = [cartTotal];
-    const prevCart = [...cart];
-
-    const existingProduct = prevCart.findIndex(
-      (item) => item[0] == productCart[0]
-    );
-    if (existingProduct != -1) {
-      const total = Number(prevTotal) + Number(prevCart[existingProduct][2]);
-      prevCart[existingProduct][3] = Number(prevCart[existingProduct][3]) + 1;
-      setCartTotal(total);
-    } else {
-      const total = Number(prevTotal) + Number(productCart[2]);
-      prevCart.push([...productCart, 1]);
-      setCartTotal(total);
+  const getStock = async (idproduct: number) => {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("product")
+        .select("stock")
+        .eq("idproduct", idproduct);
+  
+      if (error || !data || data.length === 0) {
+        throw error;
+      }
+  
+      return data[0].stock;
+  
+    } catch (error: any) {
+      console.error("Error fetching data:", error.message);
     }
+}
+  
+  const handleButtonPlusClick = async (productCart: (string | number)[]) => {
+    try {
+        // check stock
+        const idproduct = productCart[0];
+        const stock = await getStock(Number(idproduct));
 
-    setCart(prevCart);
-    setIsInitialCart(false);
+        // Add product to cart by 1
+        // id product, name, price, qty
+        const prevTotal = [cartTotal];
+        const prevCart = [...cart];
+
+        const existingProduct = prevCart.findIndex(
+        (item) => item[0] == productCart[0]
+        );
+        if (existingProduct != -1) {
+            if (stock < Number(prevCart[existingProduct][3]) + 1) {
+                // stock unavailable
+                throw new Error("Stok produk habis"); // notif
+            } else {
+                const total = Number(prevTotal) + Number(prevCart[existingProduct][2]);
+                prevCart[existingProduct][3] = Number(prevCart[existingProduct][3]) + 1;
+                setCartTotal(total);
+            }
+        } else {
+            if (stock < 1) {
+                // stock unavailable
+                throw new Error("Stok produk habis"); // notif
+            } else {
+                const total = Number(prevTotal) + Number(productCart[2]);
+                prevCart.push([...productCart, 1]);
+                setCartTotal(total);
+            }
+        }
+
+        setCart(prevCart);
+        setIsInitialCart(false);
+        
+    } catch (error: any){
+        console.error("Error fetching data:", error.message);
+    }
   };
 
   const handleButtonMinClick = (productCart: (string | number)[]) => {
+
     // Reduce the product from the cart by 1
     // id product, name, price, qty
     const prevTotal = [cartTotal];
     const prevCart = [...cart];
 
     const existingProduct = prevCart.findIndex(
-      (item) => item[0] == productCart[0]
+    (item) => item[0] == productCart[0]
     );
     const total = Number(prevTotal) - Number(prevCart[existingProduct][2]);
     const currentQty = Number(prevCart[existingProduct][3]) - 1;
     if (currentQty > 0) {
-      prevCart[existingProduct][3] = currentQty;
+        prevCart[existingProduct][3] = currentQty;
     } else {
-      prevCart.splice(existingProduct, 1);
+        prevCart.splice(existingProduct, 1);
     }
     setCartTotal(total);
     setCart(prevCart);
+
   };
 
   const handleButtonDelClick = (productCart: (string | number)[]) => {
+    // Delete the product from the cart
     const prevTotal = [cartTotal];
     const prevCart = [...cart];
     const existingProduct = prevCart.findIndex(
-      (item) => item[0] == productCart[0]
+    (item) => item[0] == productCart[0]
     );
+    
     const total =
-      Number(prevTotal) -
-      Number(prevCart[existingProduct][2]) *
+    Number(prevTotal) -
+    Number(prevCart[existingProduct][2]) *
         Number(prevCart[existingProduct][3]);
     prevCart.splice(existingProduct, 1);
     setCartTotal(total);

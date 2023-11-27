@@ -6,7 +6,7 @@ import PlaceholderImage from "@/public/icons/Logo-Mine.png";
 import IconMenu from "@/public/icons/menu.svg";
 import { NavItem } from "@/src/constants/types";
 import { useRouter } from "next/router";
-import AuthButton from "../button/AuthButton";
+import AuthButton from "@/src/components/button/AuthButton";
 
 // cek role di page, component navbar nerima passing keterangan rolenya siapa, hasil passing dibuat manggil nav_admin/nav_inventaris/nav_kasir
 
