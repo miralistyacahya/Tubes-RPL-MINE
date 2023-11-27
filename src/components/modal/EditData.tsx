@@ -1,12 +1,11 @@
 import { SyntheticEvent, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Updated import
 import { createClient } from '@/src/utils/supabase/client';
-import tutup from '../../public/icons/tutup.svg';
-import simpan from '../../public/icons/simpan.svg';
-import edit from '../../public/icons/edit button.svg';
+import tutup from '../../../public/icons/tutup.svg';
+import edit from '../../../public/icons/edit button.svg';
 import Image from 'next/image';
-import Button from './Button';
-import PopupNotification from './PopupNotification';
+import Button from '../Button';
+import PopupNotification from '../PopupNotification';
 
 interface EditDataProps<T> {
     data: T;

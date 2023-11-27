@@ -9,6 +9,7 @@ import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 import AuthButton from '@/src/components/AuthButton';
 import ImageCommerce from "../../../public/icons/commerce.png"
+import Button from '@/src/components/Button';
 
 export default function Homepage() {
   const supabase = createClient()
@@ -56,7 +57,7 @@ export default function Homepage() {
         </div>
       </nav>
     )}
-    <div className='bg-gradient-to-l from-sky-50 via-transparent to-sky-50'>
+    <div className='bg-gradient-to-l from-sky-100 via-transparent to-sky-100'>
         <div className={`container p-8 mx-auto xl:px-0 flex flex-wrap`}>
             <div className="flex items-center w-full lg:w-1/2">
                 <div className="max-w-2xl my-15">
@@ -71,6 +72,30 @@ export default function Homepage() {
                     </p>
 
                     <div className="flex flex-col items-start space-y-3 sm:space-x-4 sm:space-y-0 sm:items-center sm:flex-row">
+                        {roleUser==='norole' ?
+                            <div className='flex flex-col items-start space-y-3 sm:space-x-4 sm:space-y-0 sm:items-center sm:flex-row'>
+                                <a href='/login'>
+                                    <Button
+                                        type='button'
+                                        title='login'
+                                        round='rounded-lg'
+                                        variant='btn_blue'
+                                        size='semibold-16'
+                                    />
+                                </a>
+                                <a href='/register'>
+                                    <Button
+                                        type='button'
+                                        title='register'
+                                        round='rounded-lg'
+                                        variant='btn_blue_outline'
+                                        size='semibold-16'
+                                    />
+                                </a>
+                            </div>
+                            :
+                            <></>
+                        }
                     </div>
                 </div>
             </div>

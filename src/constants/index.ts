@@ -1,7 +1,7 @@
 import { NavItem } from "./types"
 
 export const NAV_ADMIN:NavItem[] = [
-    { href: '/', key: 'laporan', label: 'Laporan Transaksi'},
+    { href: '/account', key: 'laporan', label: 'Laporan Transaksi'},
     { href: '/account', key: 'akun', label: 'Daftar Akses'},
 ]
 
