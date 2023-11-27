@@ -18,6 +18,7 @@ interface CartProps {
   handleButtonMinClick: (productCart: (string | number)[]) => void;
   handleButtonDelClick: (productCart: (string | number)[]) => void;
   handleButtonFailedClick: () => void;
+  emptyCart: () => void;
 }
 
 const CartPage: React.FC<CartProps> = ({
@@ -31,6 +32,7 @@ const CartPage: React.FC<CartProps> = ({
   handleButtonMinClick,
   handleButtonDelClick,
   handleButtonFailedClick,
+  emptyCart,
 }) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
@@ -84,7 +86,7 @@ const CartPage: React.FC<CartProps> = ({
       console.error("Error insert data:", error.message);
     }
 
-    handleButtonFailedClick();
+    emptyCart();
     setIsSuccess(true);
   };
 

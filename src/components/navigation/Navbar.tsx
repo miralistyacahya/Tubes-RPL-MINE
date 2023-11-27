@@ -2,11 +2,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import PlaceholderImage from "../../public/icons/Logo-Mine.png";
-import IconMenu from "../../public/icons/menu.svg";
-import { NavItem } from "../../constants/types";
+import PlaceholderImage from "@/public/icons/Logo-Mine.png";
+import IconMenu from "@/public/icons/menu.svg";
+import { NavItem } from "@/src/constants/types";
 import { useRouter } from "next/router";
-import AuthButton from "../button/AuthButton";
+import AuthButton from "@/src/components/button/AuthButton";
 
 // cek role di page, component navbar nerima passing keterangan rolenya siapa, hasil passing dibuat manggil nav_admin/nav_inventaris/nav_kasir
 
