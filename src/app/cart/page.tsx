@@ -217,12 +217,6 @@ export default function Cart() {
     }
   }, [isFailed]);
 
-  const emptyCart = () => {
-    setCart([]);
-    setCartTotal(0);
-    setIsFailed(true);
-  }
-
   const getStock = async (idproduct: number) => {
     try {
       const supabase = createClient();
@@ -240,35 +234,13 @@ export default function Cart() {
     } catch (error: any) {
       console.error("Error fetching data:", error.message);
     }
-  }
-
-  const updateStock = async (idproduct: number, stock: number) => {
-    try {
-        const supabase = createClient();
-        const { data, error } = await supabase
-            .from("product")
-            .update({ stock })
-            .eq("idproduct", idproduct);
-    
-    } catch (error: any) {
-        console.error("Error fetching data:", error.message);
-    }
-  }
+}
   
   const handleButtonPlusClick = async (productCart: (string | number)[]) => {
     try {
         // check stock
         const idproduct = productCart[0];
         const stock = await getStock(Number(idproduct));
-
-        if (stock < 1) {
-            // stock unavailable
-            throw new Error("Stok produk habis"); // notif
-        }
-
-        // if available, minus stock in db by 1
-        const newStock = stock - 1;
-        await updateStock(Number(idproduct), newStock);
 
         // Add product to cart by 1
         // id product, name, price, qty
@@ -279,103 +251,76 @@ export default function Cart() {
         (item) => item[0] == productCart[0]
         );
         if (existingProduct != -1) {
-        const total = Number(prevTotal) + Number(prevCart[existingProduct][2]);
-        prevCart[existingProduct][3] = Number(prevCart[existingProduct][3]) + 1;
-        setCartTotal(total);
+            if (stock < Number(prevCart[existingProduct][3]) + 1) {
+                // stock unavailable
+                throw new Error("Stok produk habis"); // notif
+            } else {
+                const total = Number(prevTotal) + Number(prevCart[existingProduct][2]);
+                prevCart[existingProduct][3] = Number(prevCart[existingProduct][3]) + 1;
+                setCartTotal(total);
+            }
         } else {
-        const total = Number(prevTotal) + Number(productCart[2]);
-        prevCart.push([...productCart, 1]);
-        setCartTotal(total);
+            if (stock < 1) {
+                // stock unavailable
+                throw new Error("Stok produk habis"); // notif
+            } else {
+                const total = Number(prevTotal) + Number(productCart[2]);
+                prevCart.push([...productCart, 1]);
+                setCartTotal(total);
+            }
         }
 
         setCart(prevCart);
         setIsInitialCart(false);
+        
     } catch (error: any){
         console.error("Error fetching data:", error.message);
     }
   };
 
-  const handleButtonMinClick = async (productCart: (string | number)[]) => {
-    try {
-        const idproduct = productCart[0];
-        
-        const stock = await getStock(Number(idproduct));
+  const handleButtonMinClick = (productCart: (string | number)[]) => {
 
-        // add back to db by 1
-        const addedStock = stock + 1;
-        await updateStock(Number(idproduct), addedStock);
+    // Reduce the product from the cart by 1
+    // id product, name, price, qty
+    const prevTotal = [cartTotal];
+    const prevCart = [...cart];
 
-        // Reduce the product from the cart by 1
-        // id product, name, price, qty
-        const prevTotal = [cartTotal];
-        const prevCart = [...cart];
-
-        const existingProduct = prevCart.findIndex(
-        (item) => item[0] == productCart[0]
-        );
-        const total = Number(prevTotal) - Number(prevCart[existingProduct][2]);
-        const currentQty = Number(prevCart[existingProduct][3]) - 1;
-        if (currentQty > 0) {
+    const existingProduct = prevCart.findIndex(
+    (item) => item[0] == productCart[0]
+    );
+    const total = Number(prevTotal) - Number(prevCart[existingProduct][2]);
+    const currentQty = Number(prevCart[existingProduct][3]) - 1;
+    if (currentQty > 0) {
         prevCart[existingProduct][3] = currentQty;
-        } else {
+    } else {
         prevCart.splice(existingProduct, 1);
-        }
-        setCartTotal(total);
-        setCart(prevCart);
-
-    } catch (error: any){
-        console.error("Error fetching data:", error.message);
     }
+    setCartTotal(total);
+    setCart(prevCart);
+
   };
 
-  const handleButtonDelClick = async (productCart: (string | number)[]) => {
-    try {
-        const idproduct = productCart[0];
-        const stock = await getStock(Number(idproduct));
-
-        const prevTotal = [cartTotal];
-        const prevCart = [...cart];
-        const existingProduct = prevCart.findIndex(
-        (item) => item[0] == productCart[0]
-        );
-
-        // add back to db by qty
-        const addedStock = Number(stock) + Number(prevCart[existingProduct][3]);
-        await updateStock(Number(idproduct), addedStock);
-        
-        const total =
-        Number(prevTotal) -
-        Number(prevCart[existingProduct][2]) *
-            Number(prevCart[existingProduct][3]);
-        prevCart.splice(existingProduct, 1);
-        setCartTotal(total);
-        setCart(prevCart);
-
-    } catch (error: any){
-        console.error("Error fetching data:", error.message);
-    }
+  const handleButtonDelClick = (productCart: (string | number)[]) => {
+    // Delete the product from the cart
+    const prevTotal = [cartTotal];
+    const prevCart = [...cart];
+    const existingProduct = prevCart.findIndex(
+    (item) => item[0] == productCart[0]
+    );
+    
+    const total =
+    Number(prevTotal) -
+    Number(prevCart[existingProduct][2]) *
+        Number(prevCart[existingProduct][3]);
+    prevCart.splice(existingProduct, 1);
+    setCartTotal(total);
+    setCart(prevCart);
   };
 
-  const handleButtonFailedClick = async () => {
-    try {
-        // add back to db by qty
-        await Promise.all(
-            cart.map(async (product) => {
-                const idproduct = product[0];
-                const quantity = product[3];
-
-                const stock = await getStock(Number(idproduct));
-
-                const addedStock = stock + Number(quantity);
-                await updateStock(Number(idproduct), addedStock);
-            })
-        )
-        
-        emptyCart();
-
-    } catch (error: any){
-        console.error("Error fetching data:", error.message);
-    }
+  const handleButtonFailedClick = () => {
+    setCart([]);
+    setCartTotal(0);
+    setIsFailed(true);
   };
 
   const currentDate: Date = new Date();
@@ -489,7 +434,6 @@ export default function Cart() {
               handleButtonMinClick={handleButtonMinClick}
               handleButtonDelClick={handleButtonDelClick}
               handleButtonFailedClick={handleButtonFailedClick}
-              emptyCart={emptyCart}
             />
           </div>
         </div>

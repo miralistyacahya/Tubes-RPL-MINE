@@ -18,7 +18,6 @@ interface CartProps {
   handleButtonMinClick: (productCart: (string | number)[]) => void;
   handleButtonDelClick: (productCart: (string | number)[]) => void;
   handleButtonFailedClick: () => void;
-  emptyCart: () => void;
 }
 
 const CartPage: React.FC<CartProps> = ({
@@ -32,7 +31,6 @@ const CartPage: React.FC<CartProps> = ({
   handleButtonMinClick,
   handleButtonDelClick,
   handleButtonFailedClick,
-  emptyCart,
 }) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
@@ -63,6 +61,24 @@ const CartPage: React.FC<CartProps> = ({
         second: "2-digit",
       });
 
+      // reduce stock
+      await Promise.all(
+        cart.map(async (product) => {
+          const { data, error } = await supabase
+            .from("product")
+            .select("stock")
+            .eq("idproduct", product[0]);
+
+          if (data) {
+            const newStock = data[0].stock - Number(product[3]);
+            await supabase
+              .from("product")
+              .update({ stock: newStock })
+              .eq("idproduct", product[0]);
+          }
+        })
+      );
+
       // insert to transaction, return data after inserting
       const { data, error } = await supabase
         .from("transaction")
@@ -76,7 +92,7 @@ const CartPage: React.FC<CartProps> = ({
         await supabase.from("orders").insert(
           cart.map((product) => ({
             idtransaction: newIdTransaction,
-            idproduct: product[0],
+            productname: product[1],
             quantity: product[3],
             price: product[2],
           }))
@@ -86,7 +102,7 @@ const CartPage: React.FC<CartProps> = ({
       console.error("Error insert data:", error.message);
     }
 
-    emptyCart();
+    handleButtonFailedClick();
     setIsSuccess(true);
   };
 
