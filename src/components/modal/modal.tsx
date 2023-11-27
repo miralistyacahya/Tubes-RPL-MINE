@@ -2,8 +2,8 @@
 import { SyntheticEvent, useState } from "react";
 import { createClient } from "@/src/utils/supabase/client";
 import Image from "next/image";
-import tutup from "../../public/icons/tutup.svg"
-import simpan from "../../public/icons/simpan.svg"
+import tutup from "../../../public/icons/tutup.svg"
+import simpan from "../../../public/icons/simpan.svg"
 
 interface ModalProps {
   isOpen: boolean;

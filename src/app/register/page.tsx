@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 
-const isAdmin = false //role === "admin"
+const isAdmin = false 
 const isKasir = false
 const isInventaris = false
 
@@ -17,26 +17,6 @@ export default function Register({
 }: {
   searchParams: { message: string }
 }) {
-  const signIn = async (account: FormData) => {
-    'use server'
-
-    const email = account.get('email') as string
-    const password = account.get('password') as string
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      return redirect('/register?message=Gagal Mengautentikasi Pengguna')
-    }
-
-    return redirect('/account')
-  }
-
   const signUp = async (account: FormData) => {
     'use server'
 
@@ -56,15 +36,16 @@ export default function Register({
     })
 
     try {
-      const role = 'admin'
-      const {data : responsedata, error: err} = await supabase.from('account').upsert([{username: username, password: password, role: role, email: email}])
+      const {data : responsedata, error: err} = await supabase.from('account').upsert([{username: username, password: password, role:"", email: email}])
     } catch (err) {
       console.log(err);
     }
     
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      return redirect('/register?message=Tidak dapat membuat akun')
     }
+
+    return redirect('login')
   }
 
   return (
@@ -96,11 +77,11 @@ export default function Register({
               placeholder="Masukkan username anda"
               required
             />
-            <label className="medium-16 heading" htmlFor="email">
-              Email
-            </label>
+            <label className="block" htmlFor="email">
+              <span className="medium-16 heading">Email</span>
+            
             <input
-              className="rounded-md px-4 py-2 bg-inherit border mb-2 ... peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+              className="rounded-md px-4 py-2 bg-inherit border my-2 w-full peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
               type="email"
               name="email"
               placeholder="Masukkan email anda"
@@ -112,22 +93,21 @@ export default function Register({
             <span className="hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
                 Harap masukkan alamat email yang valid
             </span>
-
-            <label className="medium-16 heading"  htmlFor="password">
-              Password
             </label>
+            <label  htmlFor="password" className='block'>
+            <span className="block medium-16 heading">Password</span>
             <input
-              className="rounded-md px-4 py-2 bg-inherit border mb-2 ... peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+              className="rounded-md px-4 py-2 bg-inherit border mt-2 mb-4 w-full peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
               type="password"
               name="password"
               placeholder="••••••••"
               required
               minLength={6}
             />
-            <span className="hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+            <span className="hidden text-sm mb-2 text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
               Harap masukkan paling tidak 6 karakter
             </span>
-
+            </label>
             <button formAction={signUp} className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
               Daftar
             </button>

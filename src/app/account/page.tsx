@@ -7,10 +7,10 @@ import { account } from '@/src/types';
 import { createClient } from '@/src/utils/supabase/client';
 import Navbar from '@/src/components/Navbar';
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
-import TambahDataDropdown from '@/src/components/TambahDataDropdown';
+import TambahDataDropdown from '@/src/components/modal/TambahDataDropdown';
 import IconAddTop from "../../../public/icons/add-button-top-table.svg";
-import EditData from '@/src/components/EditData';
-import HapusData from '@/src/components/HapusData';
+import EditData from '@/src/components/modal/EditData';
+import HapusData from '@/src/components/modal/HapusData';
 import TambahAkses from './TambahAkses';
 
 const columns: TableColumn[] = [
