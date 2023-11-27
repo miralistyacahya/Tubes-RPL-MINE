@@ -31,7 +31,7 @@ export default function Register({
     })
 
     if (error) {
-      return redirect('/login?message=Gagal Mengautentikasi Pengguna')
+      return redirect('/register?message=Gagal Mengautentikasi Pengguna')
     }
 
     return redirect('/account')
@@ -65,8 +65,6 @@ export default function Register({
     if (error) {
       return redirect('/login?message=Could not authenticate user')
     }
-
-    // return redirect('login')
   }
 
   return (
@@ -102,21 +100,34 @@ export default function Register({
               Email
             </label>
             <input
-              className="rounded-md px-4 py-2 bg-inherit border mb-3"
+              className="rounded-md px-4 py-2 bg-inherit border mb-2 ... peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+              type="email"
               name="email"
               placeholder="Masukkan email anda"
               required
+              pattern={
+                '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}'
+              }
             />
+            <span className="hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+                Harap masukkan alamat email yang valid
+            </span>
+
             <label className="medium-16 heading"  htmlFor="password">
               Password
             </label>
             <input
-              className="rounded-md px-4 py-2 bg-inherit border mb-6"
+              className="rounded-md px-4 py-2 bg-inherit border mb-2 ... peer invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
               type="password"
               name="password"
               placeholder="••••••••"
               required
+              minLength={6}
             />
+            <span className="hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+              Harap masukkan paling tidak 6 karakter
+            </span>
+
             <button formAction={signUp} className="btn_blue rounded-md px-4 py-2 semibold-16 mb-3">
               Daftar
             </button>

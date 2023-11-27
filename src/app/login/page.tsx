@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation'
 import icon from '../../../public/icons/online 1.svg'
 import Image from 'next/image'
 import Navbar from '@/src/components/Navbar';
-import { NextResponse, type NextRequest } from 'next/server'
 import { NAV_ADMIN, NAV_INVENTARIS, NAV_KASIR, NAV_PUBLIC } from '@/src/constants';
 
 const isAdmin = false //role === "admin"
