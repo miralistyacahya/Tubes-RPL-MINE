@@ -173,13 +173,15 @@ export default function Cart() {
     fetchData();
   }, [pageVisited, pageVisitedTo, totalCount, selectedOption, searchQuery]);
 
+  const [isStockEmpty, setIsStockEmpty] = useState(false);
   const displayData = dataItem.map((product) => ({
     idproduct: product.idproduct || "N/A",
     productname: product.productname || "N/A",
     category: product.category || "N/A",
     price: `Rp${product.price.toLocaleString("id-ID")},00` || "N/A",
     aksi: (
-      <AddedButton
+      <AddedButton 
+        isStockEmpty={isStockEmpty}
         onButtonClick={() =>
           handleButtonPlusClick([
             product.idproduct,
@@ -215,7 +217,13 @@ export default function Cart() {
         setIsFailed(false);
       }, 2000);
     }
-  }, [isFailed]);
+
+    if (isStockEmpty) {
+      setTimeout(() => {
+        setIsStockEmpty(false);
+      }, 2000);
+    }
+  }, [isFailed, isStockEmpty]);
 
   const getStock = async (idproduct: number) => {
     try {
@@ -253,20 +261,22 @@ export default function Cart() {
         if (existingProduct != -1) {
             if (stock < Number(prevCart[existingProduct][3]) + 1) {
                 // stock unavailable
-                throw new Error("Stok produk habis"); // notif
+                setIsStockEmpty(true);
             } else {
                 const total = Number(prevTotal) + Number(prevCart[existingProduct][2]);
                 prevCart[existingProduct][3] = Number(prevCart[existingProduct][3]) + 1;
                 setCartTotal(total);
+                setIsStockEmpty(false);
             }
         } else {
             if (stock < 1) {
                 // stock unavailable
-                throw new Error("Stok produk habis"); // notif
+                setIsStockEmpty(true);
             } else {
                 const total = Number(prevTotal) + Number(productCart[2]);
                 prevCart.push([...productCart, 1]);
                 setCartTotal(total);
+                setIsStockEmpty(false);
             }
         }
 
@@ -434,6 +444,7 @@ export default function Cart() {
               handleButtonMinClick={handleButtonMinClick}
               handleButtonDelClick={handleButtonDelClick}
               handleButtonFailedClick={handleButtonFailedClick}
+              isStockEmpty={isStockEmpty}
             />
           </div>
         </div>
